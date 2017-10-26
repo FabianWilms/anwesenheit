@@ -1,0 +1,63 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="anw-single">
+  <template>
+    <style>
+      :host {
+        padding: 16px;
+      }
+    </style>
+
+    <paper-card heading="[[name]]" image="[[_getStatusImage(status)]]" alt="[[_getStatusName(status)]]">
+      <div class="card-content">
+        [[message]]
+      </div>
+    </paper-card>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class AnwSingle extends Polymer.Element {
+      static get is() { return 'anw-single'; }
+      static get properties() {
+        return {
+          name: String,
+          message: String,
+          status: Number
+        };
+      }
+      
+      _getStatusImage(status) {
+        console.log(status);
+        switch(status) {
+          case 0:
+            return "asdf";
+          case 1:
+            return "asdf";
+          case 2:
+            return "asdf";
+        }
+      }
+
+      _getStatusName(status) {
+        console.log(status);
+        switch(status) {
+          case 0:
+            return "Anwesend";
+          case 1:
+            return "Aktuell nicht da";
+          case 2:
+            return "Gar nicht da";
+        }
+      }
+
+    }
+
+    window.customElements.define(AnwSingle.is, AnwSingle);
+  </script>
+</dom-module>

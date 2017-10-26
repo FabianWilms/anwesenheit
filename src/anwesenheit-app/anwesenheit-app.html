@@ -1,0 +1,59 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-styles/default-theme.html">
+
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
+
+<link rel="import" href="../../styles/app-theme.html">
+<link rel="import" href="../anw-single/anw-single.html">
+
+<dom-module id="anwesenheit-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <firebase-app 
+      auth-domain="anwesenheit-550a6.firebaseapp.com" 
+      database-url="https://anwesenheit-550a6.firebaseio.com"
+      api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
+      project-id="anwesenheit-550a6"
+      storage-bucket="anwesenheit-550a6.appspot.com"
+      messaging-sender-id="44085346030">
+    </firebase-app>
+
+    <firebase-document
+     path="anwesenheiten" 
+     data="{{anwesenheiten}}">
+    </firebase-document>
+
+    <template is="dom-repeat" items="{{anwesenheiten}}" as="anw">
+      <anw-single 
+        name={{anw.name}}
+        message={{anw.message}}
+        status={{anw.status}}>
+      </anw-single>
+    </template>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class AnwesenheitApp extends Polymer.Element {
+      static get is() { return 'anwesenheit-app'; }
+      static get properties() {
+        return {
+          anwesenheiten: {
+            type: Object
+          }
+        };
+      }
+    }
+
+    window.customElements.define(AnwesenheitApp.is, AnwesenheitApp);
+  </script>
+</dom-module>

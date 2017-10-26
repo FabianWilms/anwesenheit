@@ -1,0 +1,7 @@
+{
+  "name": "anwesenheit",
+  "short_name": "anwesenheit",
+  "description": "Anwesenheit des Büros",
+  "start_url": "/",
+  "display": "standalone"
+}
