@@ -33,13 +33,23 @@
     </firebase-document>
 
     <div class="layout horizontal wrap">
-      <template is="dom-repeat" items="{{_toArray(anwesenheiten)}}" as="anw">
         <anw-single 
-          name={{anw.name}}
-          message={{anw.message}}
-          status={{anw.status}}>
+          name={{anwesenheiten.fabian.name}}
+          message={{anwesenheiten.fabian.message}}
+          status={{anwesenheiten.fabian.status}}>
         </anw-single>
-      </template>
+      
+        <anw-single 
+          name={{anwesenheiten.rene.name}}
+          message={{anwesenheiten.rene.message}}
+          status={{anwesenheiten.rene.status}}>
+        </anw-single>
+      
+        <anw-single 
+          name={{anwesenheiten.sebastian.name}}
+          message={{anwesenheiten.sebastian.message}}
+          status={{anwesenheiten.sebastian.status}}>
+        </anw-single>
     </div>
   </template>
 
@@ -57,11 +67,6 @@
           }
         };
       }
-      _toArray(obj) {
-            return Object.keys(obj).map(function(key) {
-                return obj[key];
-            });
-        }
     }
 
     window.customElements.define(AnwesenheitApp.is, AnwesenheitApp);
