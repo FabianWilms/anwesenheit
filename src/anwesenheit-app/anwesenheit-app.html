@@ -1,11 +1,12 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-styles/default-theme.html">
-
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 
 <link rel="import" href="../../styles/app-theme.html">
 <link rel="import" href="../anw-single/anw-single.html">
+
 
 <dom-module id="anwesenheit-app">
   <template>
@@ -14,6 +15,8 @@
         display: block;
       }
     </style>
+
+    <style include="iron-flex iron-flex-alignment"></style>
 
     <firebase-app 
       auth-domain="anwesenheit-550a6.firebaseapp.com" 
@@ -29,13 +32,15 @@
      data="{{anwesenheiten}}">
     </firebase-document>
 
-    <template is="dom-repeat" items="{{anwesenheiten}}" as="anw">
-      <anw-single 
-        name={{anw.name}}
-        message={{anw.message}}
-        status={{anw.status}}>
-      </anw-single>
-    </template>
+    <div class="layout horizontal wrap">
+      <template is="dom-repeat" items="{{anwesenheiten}}" as="anw">
+        <anw-single 
+          name={{anw.name}}
+          message={{anw.message}}
+          status={{anw.status}}>
+        </anw-single>
+      </template>
+    </div>
   </template>
 
   <script>

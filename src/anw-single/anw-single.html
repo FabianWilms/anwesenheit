@@ -1,16 +1,32 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
-
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 
 <dom-module id="anw-single">
   <template>
     <style>
       :host {
-        padding: 16px;
+        padding: 8px;
       }
+
+      paper-card {
+        width: 250px;
+      }
+
+      paper-card[state="0"] {
+        background: var(--paper-teal-400);
+      }
+
+      paper-card[state="1"] {
+        background: var(--paper-amber-500);
+      }
+
+      paper-card[state="2"] {
+        background: var(--paper-red-300);
+      }
+
     </style>
 
-    <paper-card heading="[[name]]" image="[[_getStatusImage(status)]]" alt="[[_getStatusName(status)]]">
+    <paper-card heading="[[name]]" state$="[[status]]">
       <div class="card-content">
         [[message]]
       </div>
@@ -30,30 +46,6 @@
           message: String,
           status: Number
         };
-      }
-      
-      _getStatusImage(status) {
-        console.log(status);
-        switch(status) {
-          case 0:
-            return "http://thejosevilson.com/wp-content/uploads/2013/10/door-1024x682.jpg";
-          case 1:
-            return "https://previews.123rf.com/images/pressmaster/pressmaster1103/pressmaster110300647/9206800-Portrait-of-running-businessman-with-briefcase-against-white-background-Stock-Photo.jpg";
-          case 2:
-            return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY8i4RH3YU5qn5hoTFLMe3DYP9ihKr2ubXq9t0sLWXsa8Ynfyptg";
-        }
-      }
-
-      _getStatusName(status) {
-        console.log(status);
-        switch(status) {
-          case 0:
-            return "Anwesend";
-          case 1:
-            return "Aktuell nicht da";
-          case 2:
-            return "Gar nicht da";
-        }
       }
 
     }

@@ -6,6 +6,7 @@
     "polymer": "Polymer/polymer#^2.0.0",
     "paper-styles": "PolymerElements/paper-styles#^2.0.0",
     "paper-card": "PolymerElements/paper-card#^2.0.0",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
     "polymerfire": "firebase/polymerfire#^2.2.1"
   },
   "devDependencies": {
