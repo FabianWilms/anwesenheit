@@ -1,8 +1,9 @@
 {
-  "builds":
-    [{
-      "preset": "es6-bundled"
-    }],
+  "builds": [
+    {
+      "preset": "es5-bundled"
+    }
+  ],
   "lint": {
     "rules": [
       "polymer-2"
