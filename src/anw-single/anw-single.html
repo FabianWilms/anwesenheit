@@ -9,26 +9,48 @@
       }
 
       paper-card {
-        width: 250px;
+        --paper-card-header-text: {
+          font-size: 32px;
+          padding: 8px 16px 8px 16px;
+        }
+        ;
+        width: 320px;
+      }
+
+      .card-content {
+        padding: 8px 16px 8px 16px;
       }
 
       paper-card[state="0"] {
-        background: var(--paper-teal-400);
+        background-color: var(--paper-teal-400);
       }
 
       paper-card[state="1"] {
-        background: var(--paper-amber-500);
+        background-color: var(--paper-amber-500);
       }
 
       paper-card[state="2"] {
-        background: var(--paper-red-300);
+        background-color: var(--paper-red-300)
       }
-
     </style>
 
-    <paper-card heading="[[name]]" state$="[[status]]">
+    <paper-card heading="[[person.name]]" state$="[[person.status]]">
       <div class="card-content">
-        [[message]]
+        <b>Status</b>
+        <p>[[person.message]]</p>
+
+        <template is="dom-if" if="[[person.zeiten]]">
+            <b>Reguläre Zeiten</b>
+        </template>
+
+        <table>
+          <template is="dom-repeat" items="[[person.zeiten]]" as="zeit">
+            <tr>
+              <td>{{_getDateName(index)}}</td>
+              <td>[[zeit]]</td>
+            </tr>
+          </template>
+        </table>
       </div>
     </paper-card>
   </template>
@@ -42,10 +64,18 @@
       static get is() { return 'anw-single'; }
       static get properties() {
         return {
-          name: String,
-          message: String,
-          status: Number
+          person: {
+            type: Object
+          },
+          dateNames: {
+            type: Array,
+            value: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
+          }
         };
+      }
+
+      _getDateName(index) {
+        return this.dateNames[index];
       }
 
     }

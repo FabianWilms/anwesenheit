@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
@@ -14,43 +15,55 @@
       :host {
         display: block;
       }
+
+      .legend paper-card {
+        margin: 8px;
+      }
+
+      .loading {
+        height: 100%;
+      }
     </style>
 
     <style include="iron-flex iron-flex-alignment"></style>
 
-    <firebase-app 
-      auth-domain="anwesenheit-550a6.firebaseapp.com" 
-      database-url="https://anwesenheit-550a6.firebaseio.com"
-      api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
-      project-id="anwesenheit-550a6"
-      storage-bucket="anwesenheit-550a6.appspot.com"
-      messaging-sender-id="44085346030">
+    <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com" database-url="https://anwesenheit-550a6.firebaseio.com" api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
+      project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com" messaging-sender-id="44085346030">
     </firebase-app>
 
-    <firebase-document
-     path="anwesenheiten" 
-     data="{{anwesenheiten}}">
+    <firebase-document path="anwesenheiten" data="{{anwesenheiten}}">
     </firebase-document>
 
-    <div class="layout horizontal wrap">
-        <anw-single 
-          name={{anwesenheiten.fabian.name}}
-          message={{anwesenheiten.fabian.message}}
-          status={{anwesenheiten.fabian.status}}>
-        </anw-single>
-      
-        <anw-single 
-          name={{anwesenheiten.rene.name}}
-          message={{anwesenheiten.rene.message}}
-          status={{anwesenheiten.rene.status}}>
-        </anw-single>
-      
-        <anw-single 
-          name={{anwesenheiten.sebastian.name}}
-          message={{anwesenheiten.sebastian.message}}
-          status={{anwesenheiten.sebastian.status}}>
-        </anw-single>
+    <!-- Nur wenn nötig. Bläht Layout auf.
+    <h1>Legende</h1>
+    <div class="layout horizontal wrap legend">
+        <paper-card heading="Anwesend" style="background-color: var(--paper-teal-400);"></paper-card>
+        <paper-card heading="Arbeitet, nicht physisch im Büro" style="background-color: var(--paper-amber-500);"></paper-card>
+        <paper-card heading="Abwesend" style="background-color: var(--paper-red-300);"></paper-card>
     </div>
+    -->
+    <template is="dom-if" if="[[anwesenheiten.sebastian]]">
+      <h1>Anwesenheit in i1.064</h1>
+      <div class="layout horizontal wrap">
+
+        <anw-single person={{anwesenheiten.sebastian}}>
+        </anw-single>
+
+        <anw-single person={{anwesenheiten.rene}}>
+        </anw-single>
+
+        <anw-single person={{anwesenheiten.fabian}}>
+        </anw-single>
+
+      </div>
+    </template>
+
+    <template is="dom-if" if="[[!anwesenheiten.sebastian]]">
+      <div class="layout horizontal center-justified loading">
+        <paper-spinner active></paper-spinner>
+      </div>
+    </template>
+
   </template>
 
   <script>
@@ -68,6 +81,7 @@
         };
       }
     }
+
 
     window.customElements.define(AnwesenheitApp.is, AnwesenheitApp);
   </script>
