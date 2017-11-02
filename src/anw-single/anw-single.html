@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="anw-single">
   <template>
@@ -9,16 +10,33 @@
       }
 
       paper-card {
-        --paper-card-header-text: {
-          font-size: 32px;
-          padding: 8px 16px 8px 16px;
-        }
-        ;
         width: 320px;
+      }
+
+      .card-header {
+          font-size: 32px;
+          padding: 12px 16px 8px 16px;
       }
 
       .card-content {
         padding: 8px 16px 8px 16px;
+      }
+
+      .img-circle {
+        border-radius: 50%;
+        width: 50px;
+      }
+
+      table {
+          margin: 16px 0px 16px 0px;
+      }
+
+      tr[today=true] {
+          color: var(--primary-text-color);
+      }
+
+      tr[today=false] {
+          color: #636363;
       }
 
       paper-card[state="0"] {
@@ -34,7 +52,14 @@
       }
     </style>
 
-    <paper-card heading="[[person.name]]" state$="[[person.status]]">
+    <style include="iron-flex iron-flex-alignment"></style>
+
+    <paper-card state$="[[person.status]]">
+      <div class="layout horizontal center card-header">
+          <span class="flex">[[person.name]]</span>
+          <img src="[[person.avatar]]" class="img-circle"></img>
+      </div>
+
       <div class="card-content">
         <b>Status</b>
         <p>[[person.message]]</p>
@@ -45,10 +70,12 @@
 
         <table>
           <template is="dom-repeat" items="[[person.zeiten]]" as="zeit">
-            <tr>
-              <td>{{_getDateName(index)}}</td>
-              <td>[[zeit]]</td>
-            </tr>
+
+              <tr today$="{{_isToday(index)}}">
+                <td>{{_getDateName(index)}}</td>
+                <td>[[zeit]]</td>
+              </tr>
+
           </template>
         </table>
       </div>
@@ -76,6 +103,10 @@
 
       _getDateName(index) {
         return this.dateNames[index];
+      }
+
+      _isToday(index) {
+          return (new Date().getDay() === index).toString();
       }
 
     }
