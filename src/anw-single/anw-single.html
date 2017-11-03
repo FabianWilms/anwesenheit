@@ -65,7 +65,11 @@
 
       <div class="card-content">
         <b>Status</b>
-        <p>[[person.message]]</p>
+        <p>[[person.message]]
+          <template is="dom-if" if="[[person.until]]">
+            (bis [[person.until]])
+          </template>
+        </p>
 
         <template is="dom-if" if="[[person.zeiten]]">
           <b>Reguläre Zeiten</b>
