@@ -8,7 +8,8 @@
     "paper-card": "PolymerElements/paper-card#^2.0.0",
     "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
-    "polymerfire": "firebase/polymerfire#^2.2.1"
+    "polymerfire": "firebase/polymerfire#^2.2.1",
+    "iron-image": "PolymerElements/iron-image#^2.1.2"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",

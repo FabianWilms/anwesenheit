@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="anw-single">
@@ -23,8 +24,10 @@
       }
 
       .img-circle {
+        background-color: rgba(0,0,0,0);
         border-radius: 50%;
         width: 50px;
+        height: 50px;
       }
 
       table {
@@ -57,7 +60,7 @@
     <paper-card state$="[[person.status]]">
       <div class="layout horizontal center card-header">
         <span class="flex">[[person.name]]</span>
-        <img src="[[person.avatar]]" class="img-circle"></img>
+        <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]" class="img-circle"></iron-image>
       </div>
 
       <div class="card-content">
