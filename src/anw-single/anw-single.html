@@ -14,6 +14,10 @@
         width: 320px;
       }
 
+      .padd-span {
+        padding-left: 3px;
+      }
+
       .card-header {
         font-size: 32px;
         padding: 12px 16px 8px 16px;
@@ -67,7 +71,7 @@
         <b>Status</b>
         <p>[[person.message]]
           <template is="dom-if" if="[[person.until]]">
-            (bis [[person.until]])
+            <span class="padd-span">(bis einschl. [[person.until]])</span>
           </template>
         </p>
 
