@@ -1,0 +1,38 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+
+<dom-module id="toggle-sound-button">
+    <template>
+        <paper-icon-button id="toggleButton" icon="av:volume-up" on-tap="_updateSoundState"></paper-icon-button>
+    </template>
+</dom-module>
+<script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class ToggleSoundButton extends Polymer.Element {
+        static get is() { return 'toggle-sound-button'; }
+        static get properties() {
+            return {
+                soundEnabled: {
+                    type: Boolean,
+                    value: true,
+                    notify: true
+                }
+            };
+        }
+
+        _updateSoundState() {
+            this.set('soundEnabled', !this.soundEnabled);
+            if (this.soundEnabled) {
+                this.shadowRoot.querySelector('#toggleButton').icon = "av:volume-up";
+            } else {
+                this.shadowRoot.querySelector('#toggleButton').icon = "av:volume-off";
+            }
+        }
+    }
+
+    window.customElements.define(ToggleSoundButton.is, ToggleSoundButton);
+</script>

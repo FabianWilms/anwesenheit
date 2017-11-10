@@ -7,6 +7,7 @@
 
 <link rel="import" href="../../styles/app-theme.html">
 <link rel="import" href="../anw-single/anw-single.html">
+<link rel="import" href="../toggle-sound-button/toggle-sound-button.html">
 
 
 <dom-module id="anwesenheit-app">
@@ -34,25 +35,20 @@
     <firebase-document path="anwesenheiten" data="{{anwesenheiten}}">
     </firebase-document>
 
-    <!-- Nur wenn nötig. Bläht Layout auf.
-    <h1>Legende</h1>
-    <div class="layout horizontal wrap legend">
-        <paper-card heading="Anwesend" style="background-color: var(--paper-teal-400);"></paper-card>
-        <paper-card heading="Arbeitet, nicht physisch im Büro" style="background-color: var(--paper-amber-500);"></paper-card>
-        <paper-card heading="Abwesend" style="background-color: var(--paper-red-300);"></paper-card>
-    </div>
-    -->
     <template is="dom-if" if="[[anwesenheiten.sebastian]]">
-      <h1>Anwesenheit in i1.064</h1>
+      <div class="layout horizontal">
+        <h1 class="flex">Anwesenheit in i1.064</h1>
+        <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
+      </div>
       <div class="layout horizontal wrap">
 
-        <anw-single person={{anwesenheiten.sebastian}}>
+        <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.sebastian}}>
         </anw-single>
 
-        <anw-single person={{anwesenheiten.rene}}>
+        <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.rene}}>
         </anw-single>
 
-        <anw-single person={{anwesenheiten.fabian}}>
+        <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.fabian}}>
         </anw-single>
 
       </div>
@@ -75,13 +71,10 @@
       static get is() { return 'anwesenheit-app'; }
       static get properties() {
         return {
-          anwesenheiten: {
-            type: Object
-          }
+          anwesenheiten: Object
         };
       }
     }
-
 
     window.customElements.define(AnwesenheitApp.is, AnwesenheitApp);
   </script>
