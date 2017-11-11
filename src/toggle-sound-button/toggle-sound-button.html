@@ -4,7 +4,11 @@
 
 <dom-module id="toggle-sound-button">
     <template>
-        <paper-icon-button id="toggleButton" icon="av:volume-up" on-tap="_updateSoundState"></paper-icon-button>
+        <paper-icon-button 
+            id="toggleButton" 
+            icon="av:volume-up"
+            title="Sounds deaktivieren"
+            on-tap="_updateSoundState"></paper-icon-button>
     </template>
 </dom-module>
 <script>
@@ -28,8 +32,10 @@
             this.set('soundEnabled', !this.soundEnabled);
             if (this.soundEnabled) {
                 this.shadowRoot.querySelector('#toggleButton').icon = "av:volume-up";
+                this.shadowRoot.querySelector('#toggleButton').title = "Sounds deaktivieren";
             } else {
                 this.shadowRoot.querySelector('#toggleButton').icon = "av:volume-off";
+                this.shadowRoot.querySelector('#toggleButton').title = "Sounds aktivieren";
             }
         }
     }

@@ -3,6 +3,8 @@
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
+<link rel="import" href="../notify-button/notify-button.html">
+
 <dom-module id="anw-single">
   <template>
     <style>
@@ -19,8 +21,11 @@
       }
 
       .card-header {
-        font-size: 32px;
         padding: 12px 16px 8px 16px;
+      }
+
+      .card-header .title {
+        font-size: 32px;
       }
 
       .card-content {
@@ -30,8 +35,9 @@
       .img-circle {
         background-color: #f1f1f1;
         border-radius: 50%;
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
+        margin-right: 8px;
       }
 
       table {
@@ -63,8 +69,9 @@
 
     <paper-card state$="[[person.status]]">
       <div class="layout horizontal center card-header">
-        <span class="flex">[[person.name]]</span>
         <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]" class="img-circle"></iron-image>
+        <span class="title flex">[[person.name]]</span>
+        <notify-button person-key=[[person.key]] class="self-center"></notify-button>
       </div>
 
       <div class="card-content">
