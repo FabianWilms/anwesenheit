@@ -1,14 +1,19 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <dom-module id="toggle-sound-button">
     <template>
-        <paper-icon-button 
-            id="toggleButton" 
-            icon="av:volume-up"
-            title="Sounds deaktivieren"
-            on-tap="_updateSoundState"></paper-icon-button>
+
+        <app-localstorage-document key="soundEnabled" data="{{soundEnabled}}">
+        </app-localstorage-document>
+
+        <paper-icon-button
+            icon="{{_getIcon(soundEnabled)}}" 
+            title="{{_getTitle(soundEnabled)}}" 
+            on-tap="_updateSoundState">
+        </paper-icon-button>
     </template>
 </dom-module>
 <script>
@@ -28,15 +33,24 @@
             };
         }
 
+        _getIcon(soundEnabled) {
+            if(soundEnabled) {
+                return "av:volume-up";
+            } else {
+                return "av:volume-off";
+            }
+        }
+
+        _getTitle(soundEnabled) {
+            if (this.soundEnabled) {
+                return "Sounds deaktivieren";
+            } else {
+                return "Sounds aktivieren";
+            }
+        }
+
         _updateSoundState() {
             this.set('soundEnabled', !this.soundEnabled);
-            if (this.soundEnabled) {
-                this.shadowRoot.querySelector('#toggleButton').icon = "av:volume-up";
-                this.shadowRoot.querySelector('#toggleButton').title = "Sounds deaktivieren";
-            } else {
-                this.shadowRoot.querySelector('#toggleButton').icon = "av:volume-off";
-                this.shadowRoot.querySelector('#toggleButton').title = "Sounds aktivieren";
-            }
         }
     }
 
