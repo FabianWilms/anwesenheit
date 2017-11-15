@@ -16,10 +16,10 @@
 
         <iron-ajax
             id="ajax"
-            method="post" 
-            url="https://anwesenheit-550a6.firebaseio.com/notify/[[personKey]].json" 
+            method="post"
+            url="https://api.pushover.net/1/messages.json"
             handle-as="json"
-            content-type="application/json" 
+            content-type="application/x-www-form-urlencoded"
             on-response="_handleResponse">
         </iron-ajax>
 
@@ -34,17 +34,23 @@
         static get is() { return 'notify-button'; }
         static get properties() {
             return {
-                personKey: String
+                personKey: String,
+                pushoverToken: String,
+                pushoverUser: String
             };
         }
 
         _sendNotification() {
             var name = prompt("Wie heißt du?");
             var date = new Date();
+            var message = name + " möchte dich gerne treffen.\n Dies war am: " + date;
+
+            var token = this.pushoverToken;
+            var user = this.pushoverUser;
 
             var ajax = this.shadowRoot.querySelector('#ajax')
 
-            ajax.body = {name, date};
+            ajax.body = {token, user, message};
             ajax.generateRequest();
         }
 
