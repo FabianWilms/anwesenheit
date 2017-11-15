@@ -1,4 +1,6 @@
 bower_components
 
 .idea
+*.iml
 build
+npm-debug.log

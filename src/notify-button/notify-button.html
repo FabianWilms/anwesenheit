@@ -19,16 +19,30 @@
             }
         </style>
 
-        <app-localstorage-document key="blockedUntil[[personKey]]" data="{{blockedUntil}}">
+        <app-localstorage-document key="blockedUntil[[person.key]]" data="{{blockedUntil}}">
         </app-localstorage-document>
 
-        <paper-icon-button id="btn" icon="record-voice-over" title="Besuch anmelden" on-tap="_sendNotification" blocked$="{{_isBlocked(blockedUntil)}}">
+        <paper-icon-button id="btn" icon="record-voice-over" title="Besuch anmelden" on-tap="_sendNotification"
+                           blocked$="{{_isBlocked(blockedUntil)}}">
         </paper-icon-button>
 
         <countdown-timer blocked$="{{_isBlocked(blockedUntil)}}" until="{{blockedUntil}}"></countdown-timer>
 
-        <iron-ajax id="ajax" method="post" url="https://anwesenheit-550a6.firebaseio.com/notify/[[personKey]].json" handle-as="json"
-            content-type="application/json" on-response="_handleResponse">
+        <iron-ajax
+                id="push"
+                method="post"
+                url="https://a.pushnotifier.de/1/sendToDevice"
+                handle-as="json"
+                content-type="application/x-www-form-urlencoded"
+                on-response="_handlePushoverResponse">
+        </iron-ajax>
+
+        <iron-ajax
+                id="firebase"
+                method="post"
+                url="https://anwesenheit-550a6.firebaseio.com/notify/[[person.key]].json" handle-as="json"
+                content-type="application/json"
+                on-response="_handleFirebaseResponse">
         </iron-ajax>
 
     </template>
@@ -39,10 +53,13 @@
      * @polymer
      */
     class NotifyButton extends Polymer.Element {
-        static get is() { return 'notify-button'; }
+        static get is() {
+            return 'notify-button';
+        }
+
         static get properties() {
             return {
-                personKey: String,
+                person: Object,
                 blockedUntil: String
             };
         }
@@ -52,14 +69,29 @@
             if (name != null && name !== "") {
                 if (!this._isBlocked()) {
                     var date = new Date();
-                    var ajax = this.shadowRoot.querySelector('#ajax')
-                    ajax.body = { name, date };
-                    ajax.generateRequest();
+                    var firebaseRequest = this.shadowRoot.querySelector('#firebase')
+                    firebaseRequest.body = {name, date};
+                    firebaseRequest.generateRequest();
+
+                    var content = name + " möchte dich gerne treffen.\n Dies war am: " + date;
+
+                    var appToken = this.person.pushapptoken;
+                    var apiToken = this.person.pushapitoken;
+                    var deviceID = this.person.pushdevice;
+
+                    var type = "MESSAGE";
+                    var app = "de.muenchen.anwesenheiten";
+
+                    var pushRequest = this.shadowRoot.querySelector('#push');
+
+                    pushRequest.body = {appToken, apiToken, deviceID, type, app, content};
+                    pushRequest.generateRequest();
                 }
             }
         }
 
         _isBlocked(date) {
+
             if (typeof this.blockedUntil == "undefined") {
                 return false;
             }
@@ -68,9 +100,12 @@
             return timeDiff > 0;
         }
 
-        _handleResponse(e) {
+        _handleFirebaseResponse(e) {
             var BLOCK_TIME_MINUTES = 5;
             this.set('blockedUntil', new Date(new Date().getTime() + BLOCK_TIME_MINUTES * 60000));
+        }
+
+        _handlePushoverResponse(e) {
         }
     }
 
