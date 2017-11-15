@@ -19,7 +19,7 @@
             }
         </style>
 
-        <app-localstorage-document key="blockedUntil[[person.personKey]]" data="{{blockedUntil}}">
+        <app-localstorage-document key="blockedUntil[[person.key]]" data="{{blockedUntil}}">
         </app-localstorage-document>
 
         <paper-icon-button id="btn" icon="record-voice-over" title="Besuch anmelden" on-tap="_sendNotification"
@@ -78,9 +78,6 @@
                     var appToken = this.person.pushapptoken;
                     var apiToken = this.person.pushapitoken;
                     var deviceID = this.person.pushdevice;
-
-                    console.log(this.person);
-                    console.log(apiToken);
 
                     var type = "MESSAGE";
                     var app = "de.muenchen.anwesenheiten";
