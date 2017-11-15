@@ -2,6 +2,8 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-collapse-button/iron-collapse-button.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <link rel="import" href="../notify-button/notify-button.html">
 
@@ -67,6 +69,9 @@
 
     <style include="iron-flex iron-flex-alignment"></style>
 
+    <app-localstorage-document key="showTimes[[person.key]]" data="{{showTimes}}">
+    </app-localstorage-document>
+
     <paper-card state$="[[person.status]]">
       <div class="layout horizontal center card-header">
         <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]" class="img-circle"></iron-image>
@@ -83,19 +88,27 @@
         </p>
 
         <template is="dom-if" if="[[person.zeiten]]">
-          <b>Reguläre Zeiten</b>
+
+          <iron-collapse-button opened={{showTimes}}>
+            <div slot="collapse-trigger" class="flex">
+              <b>Sprechzeiten</b>
+            </div>
+            <div slot="collapse-content">
+              <table>
+                <template is="dom-repeat" items="[[person.zeiten]]" as="zeit">
+
+                  <tr today$="{{_isToday(index)}}">
+                    <td>{{_getDateName(index)}}</td>
+                    <td>[[zeit]]</td>
+                  </tr>
+
+                </template>
+              </table>
+            </div>
+          </iron-collapse-button>
+
         </template>
 
-        <table>
-          <template is="dom-repeat" items="[[person.zeiten]]" as="zeit">
-
-            <tr today$="{{_isToday(index)}}">
-              <td>{{_getDateName(index)}}</td>
-              <td>[[zeit]]</td>
-            </tr>
-
-          </template>
-        </table>
       </div>
     </paper-card>
   </template>
