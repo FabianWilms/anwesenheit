@@ -19,7 +19,7 @@
             }
         </style>
 
-        <app-localstorage-document key="blockedUntil[[personKey]]" data="{{blockedUntil}}">
+        <app-localstorage-document key="blockedUntil[[person.personKey]]" data="{{blockedUntil}}">
         </app-localstorage-document>
 
         <paper-icon-button id="btn" icon="record-voice-over" title="Besuch anmelden" on-tap="_sendNotification"
@@ -29,9 +29,9 @@
         <countdown-timer blocked$="{{_isBlocked(blockedUntil)}}" until="{{blockedUntil}}"></countdown-timer>
 
         <iron-ajax
-                id="pushover"
+                id="push"
                 method="post"
-                url="https://api.pushover.net/1/messages.json"
+                url="https://a.pushnotifier.de/1/sendToDevice"
                 handle-as="json"
                 content-type="application/x-www-form-urlencoded"
                 on-response="_handlePushoverResponse">
@@ -40,7 +40,7 @@
         <iron-ajax
                 id="firebase"
                 method="post"
-                url="https://anwesenheit-550a6.firebaseio.com/notify/[[personKey]].json" handle-as="json"
+                url="https://anwesenheit-550a6.firebaseio.com/notify/[[person.key]].json" handle-as="json"
                 content-type="application/json"
                 on-response="_handleFirebaseResponse">
         </iron-ajax>
@@ -59,10 +59,8 @@
 
         static get properties() {
             return {
-                personKey: String,
-                blockedUntil: String,
-                pushoverToken: String,
-                pushoverUser: String
+                person: Object,
+                blockedUntil: String
             };
         }
 
@@ -75,20 +73,29 @@
                     firebaseRequest.body = {name, date};
                     firebaseRequest.generateRequest();
 
-                    var message = name + " möchte dich gerne treffen.\n Dies war am: " + date;
+                    var content = name + " möchte dich gerne treffen.\n Dies war am: " + date;
 
-                    var token = this.pushoverToken;
-                    var user = this.pushoverUser;
+                    var appToken = this.person.pushapptoken;
+                    var apiToken = this.person.pushapitoken;
+                    var deviceID = this.person.pushdevice;
 
-                    var pushoverRequest = this.shadowRoot.querySelector('#pushover')
+                    console.log(this.person);
+                    console.log(apiToken);
 
-                    pushoverRequest.body = {token, user, message};
-                    pushoverRequest.generateRequest();
+                    var type = "MESSAGE";
+                    var app = "de.muenchen.anwesenheiten";
+
+                    var pushRequest = this.shadowRoot.querySelector('#push');
+
+                    pushRequest.body = {appToken, apiToken, deviceID, type, app, content};
+                    pushRequest.generateRequest();
                 }
             }
         }
 
         _isBlocked(date) {
+            return false;
+
             if (typeof this.blockedUntil == "undefined") {
                 return false;
             }
