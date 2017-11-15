@@ -1,0 +1,57 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="countdown-timer">
+    <template>
+
+        <div>{{timer}}</div>
+
+    </template>
+</dom-module>
+<script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class CountdownTimer extends Polymer.Element {
+        static get is() { return 'countdown-timer'; }
+
+        static get properties() {
+            return {
+                until: {
+                    type: String,
+                    notify: true
+                },
+                timer: String
+            };
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+            this._updateData();
+        }
+
+        _updateData() {
+            var _this = this;
+            setInterval(function () {
+                if (typeof _this.until != "undefined") {
+                    var now = new Date().getTime();
+
+                    var distance = new Date(_this.until) - now;
+
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    _this.set('timer', minutes + ":" + seconds);
+
+                    // If the count down is finished, write some text 
+                    if (distance < 0) {
+                        _this.set('until', "");
+                    }
+                }
+            }, 1000)
+            //setTimeout(this._updateData(), 1000);
+        }
+    }
+
+    window.customElements.define(CountdownTimer.is, CountdownTimer);
+</script>
