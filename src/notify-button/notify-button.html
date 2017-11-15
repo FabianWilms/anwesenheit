@@ -22,21 +22,25 @@
         <app-localstorage-document key="blockedUntil[[personKey]]" data="{{blockedUntil}}">
         </app-localstorage-document>
 
-        <paper-icon-button id="btn" icon="record-voice-over" title="Besuch anmelden" on-tap="_sendNotification" blocked$="{{_isBlocked(blockedUntil)}}">
+        <paper-icon-button id="btn" icon="record-voice-over" title="Besuch anmelden" on-tap="_sendNotification"
+                           blocked$="{{_isBlocked(blockedUntil)}}">
         </paper-icon-button>
 
         <iron-ajax
-            id="pushover"
-            method="post"
-            url="https://api.pushover.net/1/messages.json"
-            handle-as="json"
-            content-type="application/x-www-form-urlencoded"
-            on-response="_handleResponse">
+                id="pushover"
+                method="post"
+                url="https://api.pushover.net/1/messages.json"
+                handle-as="json"
+                content-type="application/x-www-form-urlencoded"
+                on-response="_handleResponse">
         </iron-ajax>
 
-                                                   <iron-ajax id="firebase" method="post" url="https://anwesenheit-550a6.firebaseio.com/notify/[[personKey]].json" handle-as="json"
-        content-type="application/json" on-response="_handleResponse">
-                                                                     </iron-ajax>
+        <iron-ajax
+                id="firebase"
+                method="post"
+                url="https://anwesenheit-550a6.firebaseio.com/notify/[[personKey]].json" handle-as="json"
+                content-type="application/json" on-response="_handleResponse">
+        </iron-ajax>
 
     </template>
 </dom-module>
@@ -46,12 +50,14 @@
      * @polymer
      */
     class NotifyButton extends Polymer.Element {
-        static get is() { return 'notify-button'; }
+        static get is() {
+            return 'notify-button';
+        }
+
         static get properties() {
             return {
                 personKey: String,
                 blockedUntil: String,
-                personKey: String,
                 pushoverToken: String,
                 pushoverUser: String
             };
@@ -63,7 +69,7 @@
                 if (!this._isBlocked()) {
                     var date = new Date();
                     var firebaseRequest = this.shadowRoot.querySelector('#firebase')
-                    firebaseRequest.body = { name, date };
+                    firebaseRequest.body = {name, date};
                     firebaseRequest.generateRequest();
 
                     var message = name + " möchte dich gerne treffen.\n Dies war am: " + date;
