@@ -26,20 +26,23 @@
                            blocked$="{{_isBlocked(blockedUntil)}}">
         </paper-icon-button>
 
+        <countdown-timer blocked$="{{_isBlocked(blockedUntil)}}" until="{{blockedUntil}}"></countdown-timer>
+
         <iron-ajax
                 id="pushover"
                 method="post"
                 url="https://api.pushover.net/1/messages.json"
                 handle-as="json"
                 content-type="application/x-www-form-urlencoded"
-                on-response="_handleResponse">
+                on-response="_handlePushoverResponse">
         </iron-ajax>
 
         <iron-ajax
                 id="firebase"
                 method="post"
                 url="https://anwesenheit-550a6.firebaseio.com/notify/[[personKey]].json" handle-as="json"
-                content-type="application/json" on-response="_handleResponse">
+                content-type="application/json"
+                on-response="_handleFirebaseResponse">
         </iron-ajax>
 
     </template>
@@ -94,9 +97,12 @@
             return timeDiff > 0;
         }
 
-        _handleResponse(e) {
+        _handleFirebaseResponse(e) {
             var BLOCK_TIME_MINUTES = 5;
             this.set('blockedUntil', new Date(new Date().getTime() + BLOCK_TIME_MINUTES * 60000));
+        }
+
+        _handlePushoverResponse(e) {
         }
     }
 
