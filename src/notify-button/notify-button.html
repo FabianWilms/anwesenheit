@@ -65,34 +65,46 @@
         }
 
         _sendNotification() {
-            var name = prompt("Wie heißt du?");
+            const name = prompt("Wie heißt du?");
             if (name != null && name !== "") {
                 if (!this._isBlocked()) {
                     var date = new Date();
-                    var firebaseRequest = this.shadowRoot.querySelector('#firebase')
+                    var firebaseRequest = this.shadowRoot.querySelector('#firebase');
                     firebaseRequest.body = {name, date};
                     firebaseRequest.generateRequest();
 
-                    var content = name + " möchte dich gerne treffen.\n Dies war am: " + date;
 
-                    var appToken = this.person.pushapptoken;
-                    var apiToken = this.person.pushapitoken;
-                    var deviceID = this.person.pushdevice;
+                    if (typeof this.person.pushnotifier !== "undefined") {
+                        const appToken = this.person.pushnotifier.apptoken;
+                        const apiToken = this.person.pushnotifier.apitoken;
+                        const deviceID = this.person.pushnotifier.device;
+                        const app = this.person.pushnotifier.app;
 
-                    var type = "MESSAGE";
-                    var app = "de.muenchen.anwesenheiten";
+                        const type = "HIDDENURL";
+                        const hiddenURL = "https://fabianwilms.github.io/anwctrl/";
+                        const content = name + " möchte dich gerne treffen.\n Dies war am: " + date;
 
-                    var pushRequest = this.shadowRoot.querySelector('#push');
+                        const pushRequest = this.shadowRoot.querySelector('#push');
 
-                    pushRequest.body = {appToken, apiToken, deviceID, type, app, content};
-                    pushRequest.generateRequest();
+                        pushRequest.body = {
+                            appToken,
+                            apiToken,
+                            deviceID,
+                            type,
+                            app,
+                            hiddenURL,
+                            content
+                        };
+
+                        pushRequest.generateRequest();
+                    }
                 }
             }
         }
 
         _isBlocked(date) {
 
-            if (typeof this.blockedUntil == "undefined") {
+            if (typeof this.blockedUntil === "undefined") {
                 return false;
             }
             var future = new Date(this.blockedUntil);
@@ -106,6 +118,7 @@
         }
 
         _handlePushoverResponse(e) {
+            console.log(e);
         }
     }
 
