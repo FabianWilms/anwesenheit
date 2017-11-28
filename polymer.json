@@ -1,4 +1,6 @@
 {
+  "entrypoint": "index.html",
+  "shell": "src/anwesenheit-app/anwesenheit-app.html",
   "builds": [
     {
       "preset": "es5-bundled"
@@ -8,6 +10,10 @@
     "src/**/*",
     "images/**/*",
     "bower.json"
+   ],
+   "extraDependencies": [
+     "manifest.json",
+     "bower_components/webcomponentsjs/*.js"
    ],
   "lint": {
     "rules": [

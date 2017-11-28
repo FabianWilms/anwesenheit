@@ -117,11 +117,25 @@
     /**
      * @customElement
      * @polymer
+     * 
      */
     class AnwSingle extends Polymer.Element {
       static get is() { return 'anw-single'; }
       static get properties() {
         return {
+          /**
+           * The person this Card should represent.
+           *
+           * For example: {
+           *  name: "Hans",
+           *  key: "hans",
+           *  status: 0/1/2,
+           *  avatar: "image-url",
+           *  message: "Abwesend",
+           *  until: "2017-11-24",
+           *  zeiten: ["15:00-16:00"]
+           * }
+          **/
           person: {
             type: Object,
             observer: '_personChanged'
@@ -130,6 +144,10 @@
             type: Array,
             value: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
           },
+
+          /**
+           * Enables or disables the playing of sounds when a persons state changes.
+          **/
           soundEnabled: {
             type: Boolean,
             value: true
