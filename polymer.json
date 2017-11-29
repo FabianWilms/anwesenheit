@@ -6,6 +6,8 @@
     }
   ],
   "sources": [
+    "manifest.json",
+    "service-worker.js",
     "src/**/*",
     "images/**/*",
     "bower.json"
