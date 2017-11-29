@@ -2,8 +2,7 @@
   "entrypoint": "index.html",
   "builds": [
     {
-      "preset": "es5-bundled",
-      "addServiceWorker": false
+      "preset": "es5-bundled"
     }
   ],
   "sources": [
