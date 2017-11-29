@@ -66,6 +66,8 @@
             console.log('ServiceWorker registration failed: ', err);
           });
         });
+        
+        importScripts("custom-worker.js");
       }
     </script>
   </head>
