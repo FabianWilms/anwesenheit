@@ -8,6 +8,7 @@
   "sources": [
     "manifest.json",
     "custom-worker.js",
+    "sw-precache-config.js",
     "src/**/*",
     "images/**/*",
     "bower.json"
