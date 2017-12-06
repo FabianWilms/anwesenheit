@@ -16,6 +16,15 @@
 
       paper-card {
         width: 320px;
+        webkit-transition: background-color 1000ms ease;
+        -ms-transition: background-color 1000ms ease;
+        transition: background-color 1000ms ease;
+      }
+      
+      .message {    
+        font-size: 32px;
+        margin-bottom: 16px;
+        margin-top: 8px;
       }
 
       .padd-span {
@@ -80,8 +89,7 @@
       </div>
 
       <div class="card-content">
-        <b>Status</b>
-        <p>[[person.message]]
+        <p class="message">[[person.message]]
           <template is="dom-if" if="[[person.until]]">
             <span class="padd-span">(bis einschl. [[person.until]])</span>
           </template>
