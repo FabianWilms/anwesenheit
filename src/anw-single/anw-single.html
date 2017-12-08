@@ -1,11 +1,18 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/iron-collapse-button/iron-collapse-button.html">
-<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import"
+      href="../../bower_components/polymer/polymer-element.html">
+<link rel="import"
+      href="../../bower_components/paper-card/paper-card.html">
+<link rel="import"
+      href="../../bower_components/iron-image/iron-image.html">
+<link rel="import"
+      href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import"
+      href="../../bower_components/iron-collapse-button/iron-collapse-button.html">
+<link rel="import"
+      href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
-<link rel="import" href="../notify-button/notify-button.html">
+<link rel="import"
+      href="../notify-button/notify-button.html">
 
 <dom-module id="anw-single">
   <template>
@@ -20,8 +27,9 @@
         -ms-transition: background-color 1000ms ease;
         transition: background-color 1000ms ease;
       }
-      
-      .message {    
+
+      .message {
+        font-family: 'PT Mono', monospace;
         font-size: 32px;
         margin-bottom: 16px;
         margin-top: 8px;
@@ -33,6 +41,7 @@
 
       .card-header {
         padding: 12px 16px 8px 16px;
+        text-align: center;
       }
 
       .card-header .title {
@@ -44,11 +53,14 @@
       }
 
       .img-circle {
-        background-color: #f1f1f1;
         border-radius: 50%;
         width: 45px;
         height: 45px;
         margin-right: 8px;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 45px;
+        font-size: 34px;
       }
 
       table {
@@ -72,38 +84,59 @@
       }
 
       paper-card[state="2"] {
-        background-color: var(--paper-red-300)
+        background-color: var(--paper-red-300);
+      }
+
+      paper-card[state="3"] {
+        background-color: var(--paper-indigo-200);
       }
     </style>
 
     <style include="iron-flex iron-flex-alignment"></style>
 
-    <app-localstorage-document key="showTimes[[person.key]]" data="{{showTimes}}">
+    <app-localstorage-document key="showTimes[[person.key]]"
+                               data="{{showTimes}}">
     </app-localstorage-document>
 
     <paper-card state$="[[person.status]]">
       <div class="layout horizontal center card-header">
-        <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]" class="img-circle"></iron-image>
+        <template is="dom-if" if="{{!person.emoji}}">
+            <iron-image sizing="cover"
+            fade
+            preload
+            src="[[person.avatar]]"
+            alt="[[person.name]]"
+            class="img-circle"></iron-image>
+        </template>
+        <template is="dom-if" if="{{person.emoji}}">
+          <div class="img-circle">{{person.emoji}}</div>
+        </template>   
         <span class="title flex">[[person.name]]</span>
-        <notify-button person=[[person]] class="self-center"></notify-button>
+        <notify-button person=[[person]]
+                       class="self-center"></notify-button>
       </div>
 
       <div class="card-content">
         <p class="message">[[person.message]]
-          <template is="dom-if" if="[[person.until]]">
+          <template is="dom-if"
+                    if="[[person.until]]">
             <span class="padd-span">(bis einschl. [[person.until]])</span>
           </template>
         </p>
 
-        <template is="dom-if" if="[[person.zeiten]]">
+        <template is="dom-if"
+                  if="[[person.zeiten]]">
 
           <iron-collapse-button opened={{showTimes}}>
-            <div slot="collapse-trigger" class="flex">
+            <div slot="collapse-trigger"
+                 class="flex">
               <b>Sprechzeiten</b>
             </div>
             <div slot="collapse-content">
               <table>
-                <template is="dom-repeat" items="[[person.zeiten]]" as="zeit">
+                <template is="dom-repeat"
+                          items="[[person.zeiten]]"
+                          as="zeit">
 
                   <tr today$="{{_isToday(index)}}">
                     <td>{{_getDateName(index)}}</td>
