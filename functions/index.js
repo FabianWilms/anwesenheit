@@ -18,7 +18,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
     console.log('headers: ' + JSON.stringify(request.headers));
     console.log('body: ' + JSON.stringify(request.body));
 
-    const assistant = new Assistant({request: request, response: response});
+    const assistant = new Assistant({ request: request, response: response });
 
     let actionMap = new Map();
     actionMap.set(GET_ALL_INTENT, getAllAnwesenheiten);
@@ -27,15 +27,15 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
 
     function getAllAnwesenheiten(assistant) {
         console.log('getAllAnwesenheiten');
-        anwesenheiten.once("value", (snapshot) => {        
+        anwesenheiten.once("value", (snapshot) => {
             var mitarbeiterWithStatus = getMitarbeiterWithStatus(snapshot.val());
-            var response = '<speak>';
-            
+
+            var response = '';
             response += getResponseTextForStatus(mitarbeiterWithStatus[0], 0);
             response += getResponseTextForStatus(mitarbeiterWithStatus[1], 1);
             response += getResponseTextForStatus(mitarbeiterWithStatus[2], 2);
+            response += getResponseTextForStatus(mitarbeiterWithStatus[3], 3);
 
-            response += '</speak>';
             assistant.tell(response);
         })
     }
@@ -45,15 +45,16 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
 
         console.log(`Mitarbeiter: ${mitarbeiterName}`);
 
-        assistant.tell('Aktuell kann ich dir das leider noch nicht sagen. Stups mal Fabian an, damit er das Feature fertig implementiert.');
+        assistant.tell("Jajaja...ich bin schon dabei!");
+        return "Testantwort von mir. Hallo!";
     }
 
     /**
      * Returns an Array with the status as an index. At each index there is the name of the person with this status.
      */
     function getMitarbeiterWithStatus(data) {
-        var returnData = [ [], [], [] ];
-        for(var key in data) {
+        var returnData = [[], [], []];
+        for (var key in data) {
             returnData[parseInt(data[key].status)].push(data[key].name);
         }
         console.log(returnData);
@@ -66,18 +67,18 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
     function getResponseTextForStatus(mitarbeiterNamen, status) {
         var count = mitarbeiterNamen.length;
 
-        if(count === 0) {
+        if (count === 0) {
             return "";
         }
 
         var returnText = "";
-        if(count === 1) {
+        if (count === 1) {
             returnText += `${mitarbeiterNamen[0]} ist `;
-        } else if(count === 2) {
+        } else if (count === 2) {
             returnText += `${mitarbeiterNamen[0]} und ${mitarbeiterNamen[1]} sind `
-        } else if(count > 2) {
-            for(var i = 0; i < count; i++) {
-                if(i === count-1) {
+        } else if (count > 2) {
+            for (var i = 0; i < count; i++) {
+                if (i === count - 1) {
                     returnText += ` und ${mitarbeiterNamen[i]} sind `;
                 } else {
                     returnText += `${mitarbeiterNamen[i]},`;
@@ -85,7 +86,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
             }
         }
 
-        switch(status) {
+        switch (status) {
             case 0:
                 returnText += " anwesend.";
                 break;
@@ -95,11 +96,14 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
             case 2:
                 returnText += " abwesend.";
                 break;
+            case 3:
+                returnText += " in Telearbeit.";
+                break;
             default:
                 returnText += " in einem merkwürdigen Zustand. Vielleicht in einer Paralleldimension?"
                 break;
         }
-        
+
         console.log(returnText);
         return returnText;
     }
