@@ -6,6 +6,8 @@ node_js:
 before_script:
   - cd functions
   - npm install
+
+before_deploy:
   - cd ..
 
 deploy:
