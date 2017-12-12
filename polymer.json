@@ -9,9 +9,9 @@
     "manifest.json",
     "src/**/*",
     "images/**/*",
-    "styles/*",
+    "styles/**/*",
     "bower.json"
-   ],
+  ],
   "lint": {
     "rules": [
       "polymer-2"
