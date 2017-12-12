@@ -3,10 +3,6 @@ language: node_js
 node_js:
   - "node"
 
-before_script:
-  - cd functions
-  - npm install
-
 deploy:
   provider: firebase
   token:
