@@ -4,3 +4,4 @@ bower_components
 *.iml
 build
 npm-debug.log
+functions/node_modules
