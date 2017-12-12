@@ -12,6 +12,8 @@
       href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <link rel="import"
+      href="../../styles/anw-style.html">
+<link rel="import"
       href="../notify-button/notify-button.html">
 
 <dom-module id="anw-single">
@@ -75,26 +77,9 @@
       tr[today=false] {
         color: #636363;
       }
-
-      paper-card[state="0"] {
-        background-color: var(--paper-teal-400);
-      }
-
-      /* Im Haus unterwegs */
-      paper-card[state="1"] {
-        background-color: var(--paper-amber-500);
-      }
-
-      /* Abwesend */
-      paper-card[state="2"] {
-        background-color: var(--paper-red-300);
-      }
-
-      /* Telearbeit */
-      paper-card[state="3"] {
-        background-color: var(--paper-grey-500);
-      }
     </style>
+
+    <style include="anw-style"></style>
 
     <style include="iron-flex iron-flex-alignment"></style>
 
@@ -102,19 +87,22 @@
                                data="{{showTimes}}">
     </app-localstorage-document>
 
-    <paper-card state$="[[person.status]]">
+    <paper-card class="anw-state background"
+                state$="[[person.status]]">
       <div class="layout horizontal center card-header">
-        <template is="dom-if" if="{{!person.emoji}}">
-            <iron-image sizing="cover"
-            fade
-            preload
-            src="[[person.avatar]]"
-            alt="[[person.name]]"
-            class="img-circle"></iron-image>
+        <template is="dom-if"
+                  if="{{!person.emoji}}">
+          <iron-image sizing="cover"
+                      fade
+                      preload
+                      src="[[person.avatar]]"
+                      alt="[[person.name]]"
+                      class="img-circle"></iron-image>
         </template>
-        <template is="dom-if" if="{{person.emoji}}">
+        <template is="dom-if"
+                  if="{{person.emoji}}">
           <div class="img-circle">{{person.emoji}}</div>
-        </template>   
+        </template>
         <span class="title flex">[[person.name]]</span>
         <notify-button person=[[person]]
                        class="self-center"></notify-button>

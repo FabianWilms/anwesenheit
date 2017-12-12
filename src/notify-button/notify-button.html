@@ -22,7 +22,7 @@
         <app-localstorage-document key="blockedUntil[[person.key]]" data="{{blockedUntil}}">
         </app-localstorage-document>
 
-        <paper-icon-button id="btn" icon="communication:message" title="Besuch anmelden" on-tap="_sendNotification"
+        <paper-icon-button id="btn" icon="communication:message" title="Nachricht senden" on-tap="_sendNotification"
                            blocked$="{{_isBlocked(blockedUntil)}}">
         </paper-icon-button>
 
