@@ -2,12 +2,10 @@ language: node_js
 
 node_js:
   - "node"
-
-before_script:
+  
+before_deploy:
   - cd functions
   - npm install
-
-before_deploy:
   - cd ..
 
 deploy:
