@@ -130,7 +130,7 @@
                           items="[[person.zeiten]]"
                           as="zeit">
 
-                  <tr today$="{{_isToday(index)}}">
+                  <tr today$="{{_isToday(index, today)}}">
                     <td>{{_getDateName(index)}}</td>
                     <td>[[zeit]]</td>
                   </tr>
@@ -177,6 +177,10 @@
             type: Array,
             value: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
           },
+          today: {
+            type: Number,
+            value: new Date().getDay()
+          },
 
           /**
            * Enables or disables the playing of sounds when a persons state changes.
@@ -192,8 +196,8 @@
         return this.dateNames[index];
       }
 
-      _isToday(index) {
-        return (new Date().getDay() === index + 1).toString();
+      _isToday(index, today) {
+        return (today === index + 1).toString();
       }
 
       _personChanged(newPerson, oldPerson) {
@@ -210,6 +214,24 @@
             }
           }
         }
+      }
+
+      connectedCallback() {
+            super.connectedCallback();
+            this._updateData();
+      }
+
+      /**
+      * If the site is kept open for a very long time this method refreshes the current day
+      * so that the view for the Sprechzeiten is updated accordingly.
+      * This method is executed every hour.
+      */
+      _updateData() {
+          var _this = this;
+          setInterval(function () {
+            console.debug('Updating "today"');
+            _this.set('today', new Date().getDay());
+          }, 3600000);
       }
 
     }
