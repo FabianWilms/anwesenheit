@@ -15,6 +15,8 @@
       href="../../styles/anw-style.html">
 <link rel="import"
       href="../notify-button/notify-button.html">
+<link rel="import"
+      href="anw-sprechzeiten.html">
 
 <dom-module id="anw-single">
   <template>
@@ -65,18 +67,6 @@
         line-height: 45px;
         font-size: 34px;
       }
-
-      table {
-        margin: 16px 0px 16px 0px;
-      }
-
-      tr[today=true] {
-        color: var(--primary-text-color);
-      }
-
-      tr[today=false] {
-        color: #636363;
-      }
     </style>
 
     <style include="anw-style"></style>
@@ -125,18 +115,7 @@
               <b>Sprechzeiten</b>
             </div>
             <div slot="collapse-content">
-              <table>
-                <template is="dom-repeat"
-                          items="[[person.zeiten]]"
-                          as="zeit">
-
-                  <tr today$="{{_isToday(index, today)}}">
-                    <td>{{_getDateName(index)}}</td>
-                    <td>[[zeit]]</td>
-                  </tr>
-
-                </template>
-              </table>
+              <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
             </div>
           </iron-collapse-button>
 
@@ -173,14 +152,6 @@
             type: Object,
             observer: '_personChanged'
           },
-          dateNames: {
-            type: Array,
-            value: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
-          },
-          today: {
-            type: Number,
-            value: new Date().getDay()
-          },
 
           /**
            * Enables or disables the playing of sounds when a persons state changes.
@@ -190,14 +161,6 @@
             value: true
           }
         };
-      }
-
-      _getDateName(index) {
-        return this.dateNames[index];
-      }
-
-      _isToday(index, today) {
-        return (today === index + 1).toString();
       }
 
       _personChanged(newPerson, oldPerson) {
@@ -215,25 +178,6 @@
           }
         }
       }
-
-      connectedCallback() {
-            super.connectedCallback();
-            this._updateData();
-      }
-
-      /**
-      * If the site is kept open for a very long time this method refreshes the current day
-      * so that the view for the Sprechzeiten is updated accordingly.
-      * This method is executed every hour.
-      */
-      _updateData() {
-          var _this = this;
-          setInterval(function () {
-            console.debug('Updating "today"');
-            _this.set('today', new Date().getDay());
-          }, 3600000);
-      }
-
     }
 
     window.customElements.define(AnwSingle.is, AnwSingle);

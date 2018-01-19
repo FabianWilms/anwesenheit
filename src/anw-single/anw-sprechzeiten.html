@@ -1,0 +1,122 @@
+<link rel="import" href="../..//bower_components/polymer/polymer-element.html">
+
+<dom-module id="anw-sprechzeiten">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+
+            table {
+                margin: 16px 0px 16px 0px;
+                width: 100%;
+            }
+
+            tr[today=true] {
+                color: var(--primary-text-color);
+            }
+
+            tr[today=false] {
+                color: #636363;
+            }
+
+        </style>
+
+        <table>
+
+            <tr today$="{{_isToday(0, today)}}">
+                <td>Montag</td>
+                <td align="right">[[zeiten.montag.von]] - [[zeiten.montag.bis]]</td>
+            </tr>
+
+            <tr today$="{{_isToday(1, today)}}">
+                <td>Dienstag</td>
+                <td align="right">[[zeiten.dienstag.von]] - [[zeiten.dienstag.bis]]</td>
+            </tr>
+
+            <tr today$="{{_isToday(2, today)}}">
+                <td>Mittwoch</td>
+                <td align="right">[[zeiten.mittwoch.von]] - [[zeiten.mittwoch.bis]]</td>
+            </tr>
+
+            <tr today$="{{_isToday(3, today)}}">
+                <td>Donnerstag</td>
+                <td align="right">[[zeiten.donnerstag.von]] - [[zeiten.donnerstag.bis]]</td>
+            </tr>
+
+            <tr today$="{{_isToday(4, today)}}">
+                <td>Freitag</td>
+                <td align="right">[[zeiten.freitag.von]] - [[zeiten.freitag.bis]]</td>
+            </tr>
+
+        </table>
+        
+
+    </template>
+
+    <script>
+        /**
+         * `AnwSprechzeiten` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class AnwSprechzeiten extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'anw-sprechzeiten';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    zeiten: Object,
+                    today: {
+                        type: Number,
+                        value: new Date().getDay()
+                    },
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            _isToday(index, today) {
+                return (today === index + 1).toString();
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                this._updateData();
+            }
+
+            /**
+            * If the site is kept open for a very long time this method refreshes the current day
+            * so that the view for the Sprechzeiten is updated accordingly.
+            * This method is executed every hour.
+            */
+            _updateData() {
+                var _this = this;
+                setInterval(function () {
+                    console.debug('Updating "today"');
+                    _this.set('today', new Date().getDay());
+                }, 3600000);
+            }
+
+        }
+
+        window.customElements.define(AnwSprechzeiten.is, AnwSprechzeiten);
+    </script>
+</dom-module>
