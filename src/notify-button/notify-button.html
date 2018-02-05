@@ -2,7 +2,12 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <link rel="import" href="../countdown-timer/countdown-timer.html">
@@ -17,15 +22,45 @@
             countdown-timer:not([blocked]) {
                 display: none;
             }
+            
+            paper-button {
+                padding: 0.7em 0.57em;
+            }
+            
+            .input {
+                margin-top: 0px;
+                text-align: left;
+            }
+
+            iron-icon {
+                padding-right: 6px;
+            }
+
+            paper-dialog {
+                width: 80%;
+            }
+
+            @media only screen and (min-width: 720px) {
+                paper-dialog {
+                    width: 300px;
+                }
+            }
         </style>
 
         <app-localstorage-document key="blockedUntil[[person.key]]" data="{{blockedUntil}}">
         </app-localstorage-document>
 
-        <paper-icon-button id="btn" icon="communication:message" title="Nachricht senden" on-tap="_sendNotification"
+        <paper-icon-button id="btn" icon="communication:message" title="Nachricht senden" on-tap="_openDialog"
                            blocked$="{{_isBlocked(blockedUntil)}}">
         </paper-icon-button>
 
+        <paper-dialog>
+            <h2>Nachricht für [[person.name]]</h2>
+            <paper-input class="input" label="Autor" value="{{author}}"></paper-input>
+            <paper-textarea class="input" label="Nachricht" value="{{message}}"></paper-textarea>
+            <paper-button on-tap="_sendNotification" raised><iron-icon icon="send"></iron-icon>Senden</paper-button>
+        </paper-dialog>
+ 
         <countdown-timer blocked$="{{_isBlocked(blockedUntil)}}" until="{{blockedUntil}}"></countdown-timer>
 
         <iron-ajax
@@ -60,19 +95,32 @@
         static get properties() {
             return {
                 person: Object,
-                blockedUntil: String
+                blockedUntil: String,
+                message: String,
+                author: String
             };
         }
 
+        _openDialog(e) {
+            this.shadowRoot.querySelector("paper-dialog").open();
+        }
+
         _sendNotification() {
-            const name = prompt("Wie heißt du?");
-            if (name != null && name !== "") {
+            const message = this.message;
+            const author = this.author;
+            if (message != null && message !== "") {
                 if (!this._isBlocked()) {
                     var date = new Date();
                     var firebaseRequest = this.shadowRoot.querySelector('#firebase');
-                    firebaseRequest.body = {name, date};
-                    firebaseRequest.generateRequest();
 
+                    var details = {
+                        author,
+                        agent: navigator.userAgent,
+                        platform: navigator.platform
+                    }
+
+                    firebaseRequest.body = {message, date, details};
+                    firebaseRequest.generateRequest();
 
                     if (typeof this.person.pushnotifier !== "undefined") {
                         const appToken = this.person.pushnotifier.apptoken;
@@ -82,7 +130,7 @@
 
                         const type = "HIDDENURL";
                         const hiddenURL = "https://fabianwilms.github.io/anwctrl/";
-                        const content = name + " möchte dich gerne treffen.\n Dies war am: " + date;
+                        const content = message + " | von " + author + " | am " + date;
 
                         const pushRequest = this.shadowRoot.querySelector('#push');
 
@@ -100,6 +148,9 @@
                     }
                 }
             }
+            this.set('message', undefined);
+            this.set('author', undefined);
+            this.shadowRoot.querySelector("paper-dialog").close();
         }
 
         _isBlocked(date) {
