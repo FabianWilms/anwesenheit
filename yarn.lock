@@ -35,7 +35,7 @@
   resolved "https://codeload.github.com/PolymerElements/iron-a11y-keys-behavior/tar.gz/a3f03fc3fb5a0d8e93eaa33c2b6c02c16098b402"
 
 "@bower_components/iron-ajax@PolymerElements/iron-ajax#^2.0.5":
-  version ""
+  version "2.0.5"
   resolved "https://codeload.github.com/PolymerElements/iron-ajax/tar.gz/e2ed54fb6f54337312f8a5638d787852c7284273"
 
 "@bower_components/iron-behaviors@PolymerElements/iron-behaviors#1 - 2":
