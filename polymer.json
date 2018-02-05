@@ -9,8 +9,7 @@
     "manifest.json",
     "src/**/*",
     "images/**/*",
-    "styles/**/*",
-    "bower.json"
+    "styles/**/*"
   ],
   "lint": {
     "rules": [
