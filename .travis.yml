@@ -4,7 +4,9 @@ node_js:
   - "node"
 
 before_script:
-  - yarn global add polymer-cli
+- npm install -g bower
+- npm install -g polymer-cli
+- bower i
 
 script: polymer build
 
