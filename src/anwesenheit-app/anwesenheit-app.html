@@ -1,85 +1,126 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-styles/default-theme.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 
 <link rel="import" href="../../styles/app-theme.html">
 <link rel="import" href="../anw-single/anw-single.html">
+<link rel="import" href="../dilbert/daily-dilbert.html">
 <link rel="import" href="../toggle-sound-button/toggle-sound-button.html">
 
 
 <dom-module id="anwesenheit-app">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
 
-      .legend paper-card {
-        margin: 8px;
-      }
+            .legend paper-card {
+                margin: 8px;
+            }
 
-      .loading {
-        height: 100%;
-      }
+            .loading {
+                height: 100%;
+            }
 
-      .header {
-        color: var(--primary-text-color);
-      }
-    </style>
+            .header {
+                color: var(--primary-text-color);
+            }
 
-    <style include="iron-flex iron-flex-alignment"></style>
+            paper-button {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+                font-size: 14px;
+                -webkit-font-smoothing: antialiased;
+            }
 
-    <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com" database-url="https://anwesenheit-550a6.firebaseio.com" api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
-      project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com" messaging-sender-id="44085346030">
-    </firebase-app>
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+            }
 
-    <firebase-document path="anwesenheiten" data="{{anwesenheiten}}">
-    </firebase-document>
+            paper-button.green[active] {
+                background-color: var(--paper-red-500);
+            }
+        </style>
 
-    <template is="dom-if" if="[[anwesenheiten.sebastian]]">
-      <div class="layout horizontal header">
-        <h1 class="flex">Anwesenheit in I1.064</h1>
-        <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
-      </div>
-      <div class="layout horizontal wrap">
+        <style include="iron-flex iron-flex-alignment"></style>
 
-        <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.sebastian}}>
-        </anw-single>
+        <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com"
+                      database-url="https://anwesenheit-550a6.firebaseio.com"
+                      api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
+                      project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com"
+                      messaging-sender-id="44085346030">
+        </firebase-app>
 
-        <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.rene}}>
-        </anw-single>
+        <firebase-document path="anwesenheiten" data="{{anwesenheiten}}">
+        </firebase-document>
 
-        <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.fabian}}>
-        </anw-single>
+        <template is="dom-if" if="[[anwesenheiten.sebastian]]">
+            <div class="layout horizontal header">
+                <h1 class="flex">Anwesenheit in I1.064</h1>
+                <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
+            </div>
+            <div hidden="[[dilbert]]">
+                <div class="layout horizontal wrap">
 
-      </div>
+                    <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.sebastian}}>
+                    </anw-single>
+
+                    <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.rene}}>
+                    </anw-single>
+
+                    <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.fabian}}>
+                    </anw-single>
+
+                </div>
+                <paper-button class="green" raised on-tap="setDilbert">Show Dilbert</paper-button>
+            </div>
+            <div hidden="[[!dilbert]]">
+                <div>
+                    <daily-dilbert></daily-dilbert>
+                </div>
+            </div>
+        </template>
+
+        <template is="dom-if" if="[[!anwesenheiten.sebastian]]">
+            <div class="layout horizontal center-justified loading">
+                <paper-spinner active></paper-spinner>
+            </div>
+        </template>
+
     </template>
 
-    <template is="dom-if" if="[[!anwesenheiten.sebastian]]">
-      <div class="layout horizontal center-justified loading">
-        <paper-spinner active></paper-spinner>
-      </div>
-    </template>
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class AnwesenheitApp extends Polymer.Element {
+            static get is() {
+                return 'anwesenheit-app';
+            }
 
-  </template>
+            static get properties() {
+                return {
+                    anwesenheiten: Object,
+                    dilbert: {value: false},
+                    dilbertTime: {value: 10000}
+                };
+            }
 
-  <script>
-    /**
-     * @customElement
-     * @polymer
-     */
-    class AnwesenheitApp extends Polymer.Element {
-      static get is() { return 'anwesenheit-app'; }
-      static get properties() {
-        return {
-          anwesenheiten: Object
-        };
-      }
-    }
+            setDilbert() {
+                this.dilbert = true;
+                setTimeout(() => {
+                    this.dilbert = false;
+                }, this.dilbertTime)
+            }
+        }
 
-    window.customElements.define(AnwesenheitApp.is, AnwesenheitApp);
-  </script>
+        window.customElements.define(AnwesenheitApp.is, AnwesenheitApp);
+    </script>
 </dom-module>

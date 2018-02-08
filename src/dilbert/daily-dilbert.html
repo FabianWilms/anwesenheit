@@ -1,0 +1,68 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../../styles/anw-style.html">
+
+<dom-module id="daily-dilbert">
+    <template>
+        <style>
+            :host {
+                padding: 8px;
+            }
+
+        </style>
+        <style include="anw-style"></style>
+        <style include="iron-flex iron-flex-alignment"></style>
+
+        <div class="layout horizontal">
+            <img id="dilbertimg" src="">
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         *
+         */
+        class DailyDilbert extends Polymer.Element {
+            static get is() {
+                return 'daily-dilbert';
+            }
+
+            static get properties() {
+                return {};
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                this._showAsyncDilbert();
+
+            }
+
+            _showAsyncDilbert() {
+                const url = 'https://dilbert-api.glitch.me/json';
+
+                fetch(url)
+                    .then(result => {
+                        console.log(result);
+                        result.json().then(data => {
+                            console.log(data);
+                            let dilimg = this.shadowRoot.querySelector('#dilbertimg');
+                            dilimg.setAttribute('src', data.image);
+                        });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+
+            }
+
+        }
+
+        window.customElements.define(DailyDilbert.is, DailyDilbert);
+    </script>
+</dom-module>
