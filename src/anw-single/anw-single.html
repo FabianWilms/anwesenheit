@@ -1,22 +1,13 @@
-<link rel="import"
-      href="../../bower_components/polymer/polymer-element.html">
-<link rel="import"
-      href="../../bower_components/paper-card/paper-card.html">
-<link rel="import"
-      href="../../bower_components/iron-image/iron-image.html">
-<link rel="import"
-      href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import"
-      href="../../bower_components/iron-collapse-button/iron-collapse-button.html">
-<link rel="import"
-      href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-collapse-button/iron-collapse-button.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
-<link rel="import"
-      href="../../styles/anw-style.html">
-<link rel="import"
-      href="../notify-button/notify-button.html">
-<link rel="import"
-      href="anw-sprechzeiten.html">
+<link rel="import" href="../../styles/anw-style.html">
+<link rel="import" href="../notify-button/notify-button.html">
+<link rel="import" href="anw-sprechzeiten.html">
 
 <dom-module id="anw-single">
   <template>
@@ -67,61 +58,72 @@
         line-height: 45px;
         font-size: 34px;
       }
+
+      .changing {
+        width: 100%;
+      }
+
+      video {
+        padding-top: 12px;
+        padding-bottom: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block
+      }
+
     </style>
 
     <style include="anw-style"></style>
 
     <style include="iron-flex iron-flex-alignment"></style>
 
-    <app-localstorage-document key="showTimes[[person.key]]"
-                               data="{{showTimes}}">
+    <app-localstorage-document key="showTimes[[person.key]]" data="{{showTimes}}">
     </app-localstorage-document>
 
-    <paper-card class="anw-state background"
-                state$="[[person.status]]">
-      <div class="layout horizontal center card-header">
-        <template is="dom-if"
-                  if="{{!person.emoji}}">
-          <iron-image sizing="cover"
-                      fade
-                      preload
-                      src="[[person.avatar]]"
-                      alt="[[person.name]]"
-                      class="img-circle"></iron-image>
-        </template>
-        <template is="dom-if"
-                  if="{{person.emoji}}">
-          <div class="img-circle">{{person.emoji}}</div>
-        </template>
-        <span class="title flex">[[person.name]]</span>
-        <notify-button person=[[person]]
-                       class="self-center"></notify-button>
-      </div>
+    <paper-card class="anw-state background" state$="[[person.status]]">
 
-      <div class="card-content">
-        <p class="message">[[person.message]]
-          <template is="dom-if"
-                    if="[[person.until]]">
-            <br><span class="padd-span">🗓️ [[person.until]]</span>
+      <div id="contentdiv">
+
+        <div class="layout horizontal center card-header">
+          <template is="dom-if" if="{{!person.emoji}}">
+            <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]" class="img-circle"></iron-image>
           </template>
-        </p>
+          <template is="dom-if" if="{{person.emoji}}">
+            <div class="img-circle">{{person.emoji}}</div>
+          </template>
+          <span class="title flex">[[person.name]]</span>
+          <notify-button person=[[person]] class="self-center"></notify-button>
+        </div>
 
-        <template is="dom-if"
-                  if="[[person.sprechzeiten]]">
+        <div class="card-content">
+          <p class="message">[[person.message]]
+            <template is="dom-if" if="[[person.until]]">
+              <br>
+              <span class="padd-span">🗓️ [[person.until]]</span>
+            </template>
+          </p>
 
-          <iron-collapse-button opened={{showTimes}}>
-            <div slot="collapse-trigger"
-                 class="flex">
-              <b>Sprechzeiten</b>
-            </div>
-            <div slot="collapse-content">
-              <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
-            </div>
-          </iron-collapse-button>
+          <template is="dom-if" if="[[person.sprechzeiten]]">
 
-        </template>
+            <iron-collapse-button opened={{showTimes}}>
+              <div slot="collapse-trigger" class="flex">
+                <b>Sprechzeiten</b>
+              </div>
+              <div slot="collapse-content">
+                <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
+              </div>
+            </iron-collapse-button>
 
+          </template>
+
+        </div>
       </div>
+
+      <div id="gifdiv" class="layout horizontal center changing" style="display: none">
+        <video width="90%" autoplay>
+        </video>
+      </div>
+
     </paper-card>
   </template>
 
@@ -167,6 +169,9 @@
         if (this.soundEnabled) {
           if (typeof newPerson !== "undefined" && typeof oldPerson !== "undefined") {
             if (newPerson.status !== oldPerson.status) {
+
+              this._showAsyncGif(parseInt(newPerson.status));
+
               var soundURL = newPerson.sounds[newPerson.status];
               if (soundURL === "undefined" || soundURL === "") {
                 return;
@@ -178,6 +183,56 @@
           }
         }
       }
+
+      _showAsyncGif(status) {
+
+        var gUrl = "http://api.giphy.com/v1/gifs/translate?api_key=VoZXsOm4I2VvdByxD8brwGNDyoH8pVz2&s=";
+
+        switch (status) {
+          case 0:
+            gUrl += "hello";
+            break;
+          case 1:
+            gUrl += "lets go";
+            break;
+          case 2:
+            gUrl += "goodbye";
+            break;
+          case 3:
+            gUrl += "working from home";
+            break;
+        }
+
+        fetch(gUrl).then(result => {
+          result.json().then(data => {
+            console.log(data.data.images.looping);
+
+            let contentDiv = this.shadowRoot.querySelector('#contentdiv');
+            let gifDiv = this.shadowRoot.querySelector('#gifdiv');
+            let video = this.shadowRoot.querySelector('video');
+            let height = this.shadowRoot.querySelector('paper-card').offsetHeight;
+            let source = document.createElement('source');
+
+            console.log(height);
+
+            contentDiv.style.display = "none";
+            gifDiv.setAttribute("style", `display:"inline-block"; height:${height}px;`);
+            source.setAttribute('src', data.data.images.looping.mp4);
+            video.appendChild(source);
+            video.load();
+            video.play();
+
+            setTimeout(function () {
+              video.pause();
+              contentDiv.style.display = "inline-block";
+              gifDiv.style.display = "none";
+              video.removeChild(source);
+            }, 4000);
+          })
+        })
+
+      }
+
     }
 
     window.customElements.define(AnwSingle.is, AnwSingle);
