@@ -92,7 +92,7 @@
         </template>
 
         <div id="fab">
-            <iron-collapse id="collapse" class="layout vertical">
+            <iron-collapse id="collapse" opened="{{fabopened}}" class="layout vertical">
                 <div class="layout horizontal center-justified ">
                     <paper-fab mini on-tap="activateDilbert" src="../../images/icons/dilbert.png"
                                class="minifab"></paper-fab>
@@ -115,6 +115,11 @@
             static get properties() {
                 return {
                     anwesenheiten: Object,
+                    fabopened: {
+                        type: Object,
+                        notify: true,
+                        value: false
+                    },
                     fabTimeout: Object,
                     dialogTimeout: Object
                 };
@@ -124,7 +129,7 @@
                 this.$.collapse.toggle();
                 clearTimeout(this.fabTimeout);
 
-                if (this.$.collapse.properties.opened.value === false) {
+                if (this.fabopened) {
                     this.fabTimeout = setTimeout(() => {
                         this.toggle()
                     }, 5000);
