@@ -119,6 +119,7 @@
 
             toggle() {
                 this.$.collapse.toggle();
+                setTimeout(() => {this.$.collapse.toggle()}, 5000);
                 this.shadowRoot.querySelectorAll('.minifab').forEach((minifab,index,array) => {
                     minifab.animate([
                         { transform: 'scale(.2)' },
