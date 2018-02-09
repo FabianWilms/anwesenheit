@@ -124,19 +124,21 @@
                 this.$.collapse.toggle();
                 clearTimeout(this.fabTimeout);
 
-                if (this.$.collapse.properties.opened) {
+                if (this.$.collapse.properties.opened.value === false) {
                     this.fabTimeout = setTimeout(() => {
-                        this.$.collapse.hide()
+                        this.toggle()
                     }, 5000);
-                    this.shadowRoot.querySelectorAll('.minifab').forEach((minifab, index, array) => {
-                        minifab.animate([
-                            {transform: 'scale(.2)'},
-                            {transform: 'scale(1)'}
-                        ], {
-                            duration: Math.log(array.length - index) * 100 + 300,
-                        });
-                    })
                 }
+
+                this.shadowRoot.querySelectorAll('.minifab').forEach((minifab, index, array) => {
+                    minifab.animate([
+                        {transform: 'scale(.2)'},
+                        {transform: 'scale(1)'}
+                    ], {
+                        duration: Math.log(array.length - index) * 100 + 300,
+                    });
+                })
+
             }
 
             activateDilbert() {
