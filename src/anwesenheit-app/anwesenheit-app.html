@@ -147,7 +147,7 @@
             }
 
             activateDilbert() {
-                this.$.collapse.toggle();
+                this.toggle();
                 this.$.dilbert.open();
                 clearTimeout(this.dialogTimeout);
                 this.dialogTimeout = setTimeout(() => {
