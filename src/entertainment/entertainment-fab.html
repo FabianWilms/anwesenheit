@@ -1,0 +1,122 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/web-animations-js/web-animations.min.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../dilbert/daily-dilbert.html">
+
+
+<dom-module id="entertainment-fab">
+    <template>
+        <style>
+            #fab {
+                position: fixed;
+                right: 25px;
+                bottom: 30px;
+            }
+
+            .minifab {
+                margin-bottom: 10px;
+            }
+
+            paper-fab {
+                --paper-fab-background: var(--paper-light-blue-500);
+                --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+            }
+
+            #dilbert {
+                padding: 10px;
+            }
+
+            paper-progress {
+                display: block;
+                width: 100%;
+                padding: 0;
+            }
+        </style>
+
+        <paper-dialog id="dilbert" with-backdrop>
+            <daily-dilbert></daily-dilbert>
+            <paper-progress id="dilbertprogress" min="0" max="1000"></paper-progress>
+        </paper-dialog>
+
+        <div id="fab">
+            <iron-collapse id="collapse" opened="{{fabopened}}" class="layout vertical">
+                <div class="layout horizontal center-justified">
+                    <paper-fab mini on-tap="activateDilbert" src="../../images/icons/dilbert.png"
+                               class="minifab"></paper-fab>
+                </div>
+            </iron-collapse>
+            <paper-fab id="fabbutton" on-tap="toggleFab" icon="star"></paper-fab>
+        </div>
+
+    </template>
+</dom-module>
+<script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class EntertainmentFab extends Polymer.Element {
+        static get is() {
+            return 'entertainment-fab';
+        }
+
+        static get properties() {
+            return {
+                fabopened: {
+                    type: Object,
+                    notify: true,
+                    value: false
+                },
+                fabTimeout: Object,
+                dialogInterval: Object
+            };
+        }
+
+        toggleFab() {
+            this.$.collapse.toggle();
+            clearTimeout(this.fabTimeout);
+
+            if (this.fabopened) {
+                this.fabTimeout = setTimeout(() => {
+                    this.toggleFab()
+                }, 5000);
+            }
+
+            this.shadowRoot.querySelectorAll('.minifab').forEach((minifab, index, array) => {
+                minifab.animate([
+                    {transform: 'scale(.2)'},
+                    {transform: 'scale(1)'}
+                ], {
+                    duration: Math.log(array.length - index) * 100 + 300,
+                });
+            })
+
+        }
+
+        activateDilbert() {
+            this.toggleFab();
+            this.$.dilbert.open();
+            clearInterval(this.dialogInterval);
+
+            this.$.dilbertprogress.value = 0;
+            this.dialogInterval = setInterval(() => {
+
+                if (this.$.dilbertprogress.value === 1000) {
+                    this.$.dilbert.close();
+                    clearInterval(this.dialogInterval);
+                } else {
+                    this.$.dilbertprogress.value += 1;
+                }
+            }, 10);
+        }
+    }
+
+    window.customElements.define(EntertainmentFab.is, EntertainmentFab);
+</script>
