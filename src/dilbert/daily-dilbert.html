@@ -48,9 +48,7 @@
 
                 fetch(url)
                     .then(result => {
-                        console.log(result);
                         result.json().then(data => {
-                            console.log(data);
                             let dilimg = this.shadowRoot.querySelector('#dilbertimg');
                             dilimg.setAttribute('src', data.image);
                         });
