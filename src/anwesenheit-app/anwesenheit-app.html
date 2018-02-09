@@ -94,7 +94,20 @@
         <div id="fab">
             <iron-collapse id="collapse" class="layout vertical">
                 <div class="layout horizontal center-justified ">
-                    <paper-fab mini on-tap="activateDilbert" src="../../images/icons/dilbert.png" class="minifab"></paper-fab>
+                    <paper-fab mini on-tap="activateDilbert" src="../../images/icons/dilbert.png"
+                               class="minifab"></paper-fab>
+                </div>
+                <div class="layout horizontal center-justified ">
+                    <paper-fab mini on-tap="activateDilbert" src="../../images/icons/dilbert.png"
+                               class="minifab"></paper-fab>
+                </div>
+                <div class="layout horizontal center-justified ">
+                    <paper-fab mini on-tap="activateDilbert" src="../../images/icons/dilbert.png"
+                               class="minifab"></paper-fab>
+                </div>
+                <div class="layout horizontal center-justified ">
+                    <paper-fab mini on-tap="activateDilbert" src="../../images/icons/dilbert.png"
+                               class="minifab"></paper-fab>
                 </div>
             </iron-collapse>
             <paper-fab id="fabbutton" on-tap="toggle" icon="star"></paper-fab>
@@ -113,27 +126,36 @@
 
             static get properties() {
                 return {
-                    anwesenheiten: Object
+                    anwesenheiten: Object,
+                    fabTimeout: Object,
+                    dialogTimeout: Object
                 };
             }
 
             toggle() {
                 this.$.collapse.toggle();
-                setTimeout(() => {this.$.collapse.toggle()}, 5000);
-                this.shadowRoot.querySelectorAll('.minifab').forEach((minifab,index,array) => {
-                    minifab.animate([
-                        { transform: 'scale(.2)' },
-                        { transform: 'scale(1)' }
-                    ], {
-                        duration: Math.log(array.length - index) * 100 + 300,
-                    });
-                })
+                clearTimeout(this.fabTimeout);
+
+                if (this.$.collapse.properties.opened) {
+                    this.fabTimeout = setTimeout(() => {
+                        this.$.collapse.hide()
+                    }, 5000);
+                    this.shadowRoot.querySelectorAll('.minifab').forEach((minifab, index, array) => {
+                        minifab.animate([
+                            {transform: 'scale(.2)'},
+                            {transform: 'scale(1)'}
+                        ], {
+                            duration: Math.log(array.length - index) * 100 + 300,
+                        });
+                    })
+                }
             }
 
             activateDilbert() {
                 this.$.collapse.toggle();
                 this.$.dilbert.open();
-                setTimeout(() => {
+                clearTimeout(this.dialogTimeout);
+                this.dialogTimeout = setTimeout(() => {
                     this.$.dilbert.close();
                 }, 10000)
             }
