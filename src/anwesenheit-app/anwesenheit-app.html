@@ -125,13 +125,13 @@
                 };
             }
 
-            toggle() {
+            toggleFab() {
                 this.$.collapse.toggle();
                 clearTimeout(this.fabTimeout);
 
                 if (this.fabopened) {
                     this.fabTimeout = setTimeout(() => {
-                        this.toggle()
+                        this.toggleFab()
                     }, 5000);
                 }
 
@@ -147,7 +147,7 @@
             }
 
             activateDilbert() {
-                this.toggle();
+                this.toggleFab();
                 this.$.dilbert.open();
                 clearTimeout(this.dialogTimeout);
                 this.dialogTimeout = setTimeout(() => {
