@@ -59,6 +59,10 @@
         font-size: 34px;
       }
 
+      #contentdiv {
+        width: 100%;
+      }
+
       .changing {
         width: 100%;
       }
@@ -70,7 +74,6 @@
         margin-right: auto;
         display: block
       }
-
     </style>
 
     <style include="anw-style"></style>
@@ -166,12 +169,12 @@
       }
 
       _personChanged(newPerson, oldPerson) {
-        if (this.soundEnabled) {
-          if (typeof newPerson !== "undefined" && typeof oldPerson !== "undefined") {
-            if (newPerson.status !== oldPerson.status) {
+        if (typeof newPerson !== "undefined" && typeof oldPerson !== "undefined") {
+          if (newPerson.status !== oldPerson.status) {
 
-              this._showAsyncGif(parseInt(newPerson.status));
+            this._showAsyncGif(parseInt(newPerson.status));
 
+            if (this.soundEnabled) {
               var soundURL = newPerson.sounds[newPerson.status];
               if (soundURL === "undefined" || soundURL === "") {
                 return;
@@ -180,6 +183,7 @@
                 sound.autoplay = true;
               }
             }
+
           }
         }
       }
@@ -196,7 +200,7 @@
             gUrl += "lets go";
             break;
           case 2:
-            gUrl += "goodbye";
+            gUrl += "bye";
             break;
           case 3:
             gUrl += "working from home";
@@ -230,7 +234,7 @@
             }, 4000);
           })
         })
-        .then(error => {console.log(error)});
+          .then(error => { console.log(error) });
 
       }
 
