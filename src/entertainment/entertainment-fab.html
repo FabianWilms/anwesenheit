@@ -8,7 +8,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import" href="../dilbert/daily-dilbert.html">
+<link rel="import" href="daily-dilbert.html">
 
 
 <dom-module id="entertainment-fab">
@@ -21,7 +21,7 @@
             }
 
             .minifab {
-                margin-bottom: 10px;
+                margin: 8px;
             }
 
             paper-fab {
@@ -41,6 +41,7 @@
         </style>
 
         <paper-dialog id="dilbert" with-backdrop>
+            <h1>Daily Dilbert</h1>
             <daily-dilbert></daily-dilbert>
             <paper-progress id="dilbertprogress" min="0" max="1000"></paper-progress>
         </paper-dialog>
@@ -48,8 +49,10 @@
         <div id="fab">
             <iron-collapse id="collapse" opened="{{fabopened}}" class="layout vertical">
                 <div class="layout horizontal center-justified">
-                    <paper-fab mini on-tap="activateDilbert" src="https://fabianwilms.github.io/anwesenheit/images/icons/dilbert.png"
-                               class="minifab"></paper-fab>
+                    <paper-fab mini
+                        on-tap="activateDilbert"
+                        src="https://fabianwilms.github.io/anwesenheit/images/icons/dilbert.png"
+                        class="minifab"></paper-fab>
                 </div>
             </iron-collapse>
             <paper-fab id="fabbutton" on-tap="toggleFab" icon="star"></paper-fab>
