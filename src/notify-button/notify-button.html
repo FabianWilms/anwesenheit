@@ -30,6 +30,8 @@
             .input {
                 margin-top: 0px;
                 text-align: left;
+                --paper-input-container-color: grey;
+                --paper-input-container-focus-color: black;
             }
 
             iron-icon {
@@ -56,8 +58,8 @@
 
         <paper-dialog>
             <h2>Nachricht für [[person.name]]</h2>
-            <paper-input class="input" label="Autor" value="{{author}}"></paper-input>
-            <paper-textarea class="input" label="Nachricht" value="{{message}}"></paper-textarea>
+            <paper-input class="input" label="Autor" value="{{author}}" on-input="_reposition"></paper-input>
+            <paper-textarea class="input" label="Nachricht" value="{{message}}" on-input="_reposition"></paper-textarea>
             <paper-button on-tap="_sendNotification" raised><iron-icon icon="send"></iron-icon>Senden</paper-button>
         </paper-dialog>
  
@@ -99,6 +101,10 @@
                 message: String,
                 author: String
             };
+        }
+
+        _reposition(e) {
+            this.shadowRoot.querySelector("paper-dialog").center();
         }
 
         _openDialog(e) {

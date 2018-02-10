@@ -1,5 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-right-animation.html">
 <link rel="import" href="../../bower_components/web-animations-js/web-animations.min.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
@@ -25,8 +28,9 @@
             }
 
             paper-fab {
-                --paper-fab-background: var(--paper-light-blue-500);
-                --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+                --paper-fab-background: white;
+                --paper-fab-keyboard-focus-background: grey;
+                color: black;
             }
 
             #dilbert {
@@ -37,10 +41,12 @@
                 display: block;
                 width: 100%;
                 padding: 0;
+                --paper-progress-active-color: black;
+                --paper-progress-secondary-color: var(--paper-light-blue-100);
             }
         </style>
 
-        <paper-dialog id="dilbert" with-backdrop>
+        <paper-dialog id="dilbert" with-backdrop entry-animation="slide-from-left-animation" exit-animation="slide-right-animation">
             <h1>Daily Dilbert</h1>
             <daily-dilbert></daily-dilbert>
             <paper-progress id="dilbertprogress" min="0" max="1000"></paper-progress>
