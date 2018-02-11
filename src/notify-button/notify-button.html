@@ -122,56 +122,61 @@
                     firebaseRequest.body = {message, date, details};
                     firebaseRequest.generateRequest();
 
-                    if (this.person.pushnotifier !== undefined) {
-                        const appToken = this.person.pushnotifier.apptoken;
+                    this._sendPushNoti();
 
-                        firebase.database()
-                            .ref('/pushnotifier')
-                            .once('value')
-                            .then(snap => snap.val())
-                            .then(val => {
-
-                            const apiToken = val.apitoken;
-                            const app = val.appid;
-
-                            const redirectURL = "https://fabianwilms.github.io/anwctrl/";
-                            const notiURL = "https://api.pushnotifier.de/v2/notifications/notification";
-                            const deviceURL = "https://api.pushnotifier.de/v2/devices";
-                            const content = message + " | von " + author + " | am " + date;
-                            const authheader = 'Basic ' + btoa(app + ':' + apiToken);
-
-                            fetch(deviceURL, {
-                                method: 'GET',
-                                headers: {
-                                    'Authorization': authheader,
-                                    'X-AppToken': appToken
-                                }
-                            })
-                                .then(response => response.body)
-                                .then(body => {
-
-                                    let devices = body.map(device => device.id);
-
-                                    fetch(notiURL, {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Authorization': authheader,
-                                            'X-AppToken': appToken
-                                        },
-                                        body: {
-                                            devices: devices,
-                                            content: content,
-                                            url: redirectURL
-                                        }
-                                    }).then(this._handlePushoverResponse)
-                                });
-                        });
-                    }
                 }
             }
             this.set('message', undefined);
             this.set('author', undefined);
             this.shadowRoot.querySelector("paper-dialog").close();
+        }
+
+        _sendPushNoti() {
+            if (this.person.pushnotifier !== undefined) {
+                const appToken = this.person.pushnotifier.apptoken;
+
+                firebase.database()
+                    .ref('/pushnotifier')
+                    .once('value')
+                    .then(snap => snap.val())
+                    .then(val => {
+
+                        const apiToken = val.apitoken;
+                        const app = val.appid;
+
+                        const redirectURL = "https://fabianwilms.github.io/anwctrl/";
+                        const notiURL = "https://api.pushnotifier.de/v2/notifications/notification";
+                        const deviceURL = "https://api.pushnotifier.de/v2/devices";
+                        const content = message + " | von " + author + " | am " + date;
+                        const authheader = 'Basic ' + btoa(app + ':' + apiToken);
+
+                        fetch(deviceURL, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': authheader,
+                                'X-AppToken': appToken
+                            }
+                        })
+                            .then(response => response.body)
+                            .then(body => {
+
+                                let devices = body.map(device => device.id);
+
+                                fetch(notiURL, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Authorization': authheader,
+                                        'X-AppToken': appToken
+                                    },
+                                    body: {
+                                        devices: devices,
+                                        content: content,
+                                        url: redirectURL
+                                    }
+                                }).then(this._handlePushoverResponse)
+                            });
+                    });
+            }
         }
 
         _isBlocked(date) {
