@@ -122,7 +122,7 @@
                     firebaseRequest.body = {message, date, details};
                     firebaseRequest.generateRequest();
 
-                    this._sendPushNoti();
+                    this._sendPushNoti(message, author, date);
 
                 }
             }
@@ -131,7 +131,7 @@
             this.shadowRoot.querySelector("paper-dialog").close();
         }
 
-        _sendPushNoti() {
+        _sendPushNoti(message, author, date) {
             if (this.person.pushnotifier !== undefined) {
                 const appToken = this.person.pushnotifier.apptoken;
 
