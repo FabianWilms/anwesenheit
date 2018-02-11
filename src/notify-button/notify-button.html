@@ -110,10 +110,10 @@
             const author = this.author;
             if (message != null && message !== "") {
                 if (!this._isBlocked()) {
-                    var date = new Date();
-                    var firebaseRequest = this.shadowRoot.querySelector('#firebase');
+                    let date = new Date();
+                    let firebaseRequest = this.shadowRoot.querySelector('#firebase');
 
-                    var details = {
+                    let details = {
                         author,
                         agent: navigator.userAgent,
                         platform: navigator.platform
@@ -122,30 +122,51 @@
                     firebaseRequest.body = {message, date, details};
                     firebaseRequest.generateRequest();
 
-                    const appToken = this.person.pushnotifier.apptoken;
-                    const apiToken = this.person.pushnotifier.apitoken;
-                    const deviceID = this.person.pushnotifier.device;
-                    const app = this.person.pushnotifier.app;
+                    if (this.person.pushnotifier !== undefined) {
+                        const appToken = this.person.pushnotifier.apptoken;
 
-                    const redirectURL = "https://fabianwilms.github.io/anwctrl/";
-                    const apiURL = "https://api.pushnotifier.de/v2/notifications/notification";
-                    const content = message + " | von " + author + " | am " + date;
+                        firebase.database()
+                            .ref('/pushnotifier')
+                            .once('value')
+                            .then(snap => snap.val())
+                            .then(val => {
 
+                            const apiToken = val.apitoken;
+                            const app = val.appid;
 
-                    fetch(apiURL, {
-                        method: 'PUT',
-                        credentials: 'omit',
-                        headers: {
-                            'Authorization': 'Basic ' + btoa(app + ':' + apiToken),
-                            'X-AppToken': appToken
-                        },
-                        body: {
-                            devices: [deviceID],
-                            content: content,
-                            url: redirectURL
-                        }
-                    }).then(this._handlePushoverResponse)
+                            const redirectURL = "https://fabianwilms.github.io/anwctrl/";
+                            const notiURL = "https://api.pushnotifier.de/v2/notifications/notification";
+                            const deviceURL = "https://api.pushnotifier.de/v2/devices";
+                            const content = message + " | von " + author + " | am " + date;
+                            const authheader = 'Basic ' + btoa(app + ':' + apiToken);
 
+                            fetch(deviceURL, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': authheader,
+                                    'X-AppToken': appToken
+                                }
+                            })
+                                .then(response => response.body)
+                                .then(body => {
+
+                                    let devices = body.map(device => device.id);
+
+                                    fetch(notiURL, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Authorization': authheader,
+                                            'X-AppToken': appToken
+                                        },
+                                        body: {
+                                            devices: devices,
+                                            content: content,
+                                            url: redirectURL
+                                        }
+                                    }).then(this._handlePushoverResponse)
+                                });
+                        });
+                    }
                 }
             }
             this.set('message', undefined);
@@ -158,13 +179,13 @@
             if (typeof this.blockedUntil === "undefined") {
                 return false;
             }
-            var future = new Date(this.blockedUntil);
-            var timeDiff = future.getTime() - new Date();
+            let future = new Date(this.blockedUntil);
+            let timeDiff = future.getTime() - new Date();
             return timeDiff > 0;
         }
 
         _handleFirebaseResponse(e) {
-            var BLOCK_TIME_MINUTES = 5;
+            let BLOCK_TIME_MINUTES = 5;
             this.set('blockedUntil', new Date(new Date().getTime() + BLOCK_TIME_MINUTES * 60000));
         }
 
