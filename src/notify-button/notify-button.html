@@ -67,10 +67,10 @@
 
         <iron-ajax
                 id="push"
-                method="post"
-                url="https://a.pushnotifier.de/1/sendToDevice"
+                method="put"
+                url="https://api.pushnotifier.de/v2/notifications/notification"
                 handle-as="json"
-                content-type="application/x-www-form-urlencoded"
+                content-type="application/json"
                 on-response="_handlePushoverResponse">
         </iron-ajax>
 
@@ -123,7 +123,7 @@
                         author,
                         agent: navigator.userAgent,
                         platform: navigator.platform
-                    }
+                    };
 
                     firebaseRequest.body = {message, date, details};
                     firebaseRequest.generateRequest();
@@ -134,20 +134,19 @@
                         const deviceID = this.person.pushnotifier.device;
                         const app = this.person.pushnotifier.app;
 
-                        const type = "HIDDENURL";
-                        const hiddenURL = "https://fabianwilms.github.io/anwctrl/";
+                        const URL = "https://fabianwilms.github.io/anwctrl/";
                         const content = message + " | von " + author + " | am " + date;
 
                         const pushRequest = this.shadowRoot.querySelector('#push');
 
+                        pushRequest.headers['Authorization'] = 'Basic ' + btoa(app + ':' + apiToken);
+                        console.log('Basic ' + btoa(app + ':' + apiToken));
+                        pushRequest.headers['X-AppToken'] = appToken;
+
                         pushRequest.body = {
-                            appToken,
-                            apiToken,
-                            deviceID,
-                            type,
-                            app,
-                            hiddenURL,
-                            content
+                            devices: [deviceID],
+                            content: content,
+                            url: URL
                         };
 
                         pushRequest.generateRequest();
