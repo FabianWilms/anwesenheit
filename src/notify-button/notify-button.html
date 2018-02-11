@@ -22,11 +22,11 @@
             countdown-timer:not([blocked]) {
                 display: none;
             }
-            
+
             paper-button {
                 padding: 0.7em 0.57em;
             }
-            
+
             .input {
                 margin-top: 0px;
                 text-align: left;
@@ -60,19 +60,13 @@
             <h2>Nachricht für [[person.name]]</h2>
             <paper-input class="input" label="Autor" value="{{author}}" on-input="_reposition"></paper-input>
             <paper-textarea class="input" label="Nachricht" value="{{message}}" on-input="_reposition"></paper-textarea>
-            <paper-button on-tap="_sendNotification" raised><iron-icon icon="send"></iron-icon>Senden</paper-button>
+            <paper-button on-tap="_sendNotification" raised>
+                <iron-icon icon="send"></iron-icon>
+                Senden
+            </paper-button>
         </paper-dialog>
- 
-        <countdown-timer blocked$="{{_isBlocked(blockedUntil)}}" until="{{blockedUntil}}"></countdown-timer>
 
-        <iron-ajax
-                id="push"
-                method="put"
-                url="https://api.pushnotifier.de/v2/notifications/notification"
-                handle-as="json"
-                content-type="application/json"
-                on-response="_handlePushoverResponse">
-        </iron-ajax>
+        <countdown-timer blocked$="{{_isBlocked(blockedUntil)}}" until="{{blockedUntil}}"></countdown-timer>
 
         <iron-ajax
                 id="firebase"
@@ -128,29 +122,30 @@
                     firebaseRequest.body = {message, date, details};
                     firebaseRequest.generateRequest();
 
-                    if (typeof this.person.pushnotifier !== "undefined") {
-                        const appToken = this.person.pushnotifier.apptoken;
-                        const apiToken = this.person.pushnotifier.apitoken;
-                        const deviceID = this.person.pushnotifier.device;
-                        const app = this.person.pushnotifier.app;
+                    const appToken = this.person.pushnotifier.apptoken;
+                    const apiToken = this.person.pushnotifier.apitoken;
+                    const deviceID = this.person.pushnotifier.device;
+                    const app = this.person.pushnotifier.app;
 
-                        const URL = "https://fabianwilms.github.io/anwctrl/";
-                        const content = message + " | von " + author + " | am " + date;
+                    const redirectURL = "https://fabianwilms.github.io/anwctrl/";
+                    const apiURL = "https://api.pushnotifier.de/v2/notifications/notification";
+                    const content = message + " | von " + author + " | am " + date;
 
-                        const pushRequest = this.shadowRoot.querySelector('#push');
 
-                        pushRequest.headers['Authorization'] = 'Basic ' + btoa(app + ':' + apiToken);
-                        console.log('Basic ' + btoa(app + ':' + apiToken));
-                        pushRequest.headers['X-AppToken'] = appToken;
-
-                        pushRequest.body = {
+                    fetch(apiURL, {
+                        method: 'PUT',
+                        credentials: 'omit',
+                        headers: {
+                            'Authorization': 'Basic ' + btoa(app + ':' + apiToken),
+                            'X-AppToken': appToken
+                        },
+                        body: {
                             devices: [deviceID],
                             content: content,
-                            url: URL
-                        };
+                            url: redirectURL
+                        }
+                    }).then(this._handlePushoverResponse)
 
-                        pushRequest.generateRequest();
-                    }
                 }
             }
             this.set('message', undefined);
