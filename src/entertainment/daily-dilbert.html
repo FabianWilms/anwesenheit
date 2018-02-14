@@ -43,8 +43,7 @@
             }
 
             static get properties() {
-                return {
-                };
+                return {};
             }
 
             connectedCallback() {
@@ -53,7 +52,7 @@
                 this._showAsyncDilbert();
                 setInterval(() => 
                     this._showAsyncDilbert()
-                , 900000)
+                , 3600000)
 
             }
 
