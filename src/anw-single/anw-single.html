@@ -126,6 +126,7 @@
 
       <div id="gifdiv" class="layout horizontal center changing" style="display: none">
         <video width="90%" autoplay>
+            <source id="gifsrc">
         </video>
       </div>
 
@@ -170,6 +171,17 @@
         };
       }
 
+      connectedCallback() {
+        var contentDiv = this.shadowRoot.querySelector('#contentdiv');
+        var gifDiv = this.shadowRoot.querySelector('#gifdiv');
+        var vid = this.shadowRoot.querySelector('video');
+
+        vid.addEventListener('ended', event => {
+          contentDiv.style.display = "inline-block";
+          gifDiv.style.display = "none";
+        });
+      }
+
       _personChanged(newPerson, oldPerson) {
         if (typeof newPerson !== "undefined" && typeof oldPerson !== "undefined") {
           if (newPerson.status !== oldPerson.status) {
@@ -209,34 +221,23 @@
             break;
         }
 
-        fetch(gUrl).then(result => {
-          result.json().then(data => {
-            console.log(data.data.images.looping);
+        fetch(gUrl)
+          .then(result => {
+            result.json().then(data => {
+              let contentDiv = this.shadowRoot.querySelector('#contentdiv');
+              let gifDiv = this.shadowRoot.querySelector('#gifdiv');
+              let video = this.shadowRoot.querySelector('video');
+              let height = this.shadowRoot.querySelector('paper-card').offsetHeight;
+              let source = this.shadowRoot.querySelector('#gifsrc');
 
-            let contentDiv = this.shadowRoot.querySelector('#contentdiv');
-            let gifDiv = this.shadowRoot.querySelector('#gifdiv');
-            let video = this.shadowRoot.querySelector('video');
-            let height = this.shadowRoot.querySelector('paper-card').offsetHeight;
-            let source = document.createElement('source');
-
-            console.log(height);
-
-            contentDiv.style.display = "none";
-            gifDiv.setAttribute("style", `display:"inline-block"; height:${height}px;`);
-            source.setAttribute('src', data.data.images.looping.mp4);
-            video.appendChild(source);
-            video.load();
-            video.play();
-
-            setTimeout(function () {
-              video.pause();
-              contentDiv.style.display = "inline-block";
-              gifDiv.style.display = "none";
-              video.removeChild(source);
-            }, 4000);
+              contentDiv.style.display = "none";
+              gifDiv.setAttribute("style", `display:"inline-block"; height:${height}px;`);
+              source.setAttribute('src', data.data.images.original_mp4.mp4);
+              video.load();
+              video.play();
+            })
           })
-        })
-          .then(error => { console.log(error) });
+          .catch(error => { console.log(error) });
 
       }
 
