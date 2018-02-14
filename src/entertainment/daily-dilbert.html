@@ -48,7 +48,11 @@
 
             connectedCallback() {
                 super.connectedCallback();
+
                 this._showAsyncDilbert();
+                setInterval(() => 
+                    this._showAsyncDilbert()
+                , 3600000)
 
             }
 
