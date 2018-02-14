@@ -126,6 +126,7 @@
 
       <div id="gifdiv" class="layout horizontal center changing" style="display: none">
         <video width="90%" autoplay>
+            <source id="gifsrc">
         </video>
       </div>
 
@@ -178,9 +179,6 @@
         vid.addEventListener('ended', event => {
           contentDiv.style.display = "inline-block";
           gifDiv.style.display = "none";
-          while (vid.firstChild) {
-            vid.removeChild(vid.firstChild);
-          }
         });
       }
 
@@ -230,12 +228,11 @@
               let gifDiv = this.shadowRoot.querySelector('#gifdiv');
               let video = this.shadowRoot.querySelector('video');
               let height = this.shadowRoot.querySelector('paper-card').offsetHeight;
-              let source = document.createElement('source');
+              let source = this.shadowRoot.querySelector('#gifsrc');
 
               contentDiv.style.display = "none";
               gifDiv.setAttribute("style", `display:"inline-block"; height:${height}px;`);
               source.setAttribute('src', data.data.images.original_mp4.mp4);
-              video.appendChild(source);
               video.load();
               video.play();
             })
