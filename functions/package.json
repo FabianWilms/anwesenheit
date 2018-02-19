@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "actions-on-google": "^1.0.9",
-    "firebase-admin": "~5.5.0",
-    "firebase-functions": "^0.7.3"
+    "firebase-admin": "~5.8.1",
+    "firebase-functions": "^0.8.1",
+    "@firebase/database": "^0.1.9",
+    "nodemailer": "^4.4.2"
   },
   "private": true
 }

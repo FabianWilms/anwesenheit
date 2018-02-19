@@ -1,6 +1,6 @@
 'use strict';
 
-const Assistant = require('actions-on-google').ApiAiAssistant;
+const Assistant = require('actions-on-google').DialogflowApp;
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
@@ -108,3 +108,55 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
         return returnText;
     }
 });
+
+const nodemailer = require('nodemailer');
+// Configure the email transport using the default SMTP transport and a GMail account.
+// For Gmail, enable these:
+// 1. https://www.google.com/settings/security/lesssecureapps
+// 2. https://accounts.google.com/DisplayUnlockCaptcha
+// For other types of transports such as Sendgrid see https://nodemailer.com/transports/
+// TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
+const gmailEmail = functions.config().gmail.email;
+const gmailPassword = functions.config().gmail.password;
+const mailTransport = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: gmailEmail,
+    pass: gmailPassword,
+  },
+});
+
+// Your company name to include in the emails
+// TODO: Change this to your app or company name to customize the email sent.
+const APP_NAME = 'I1.064 Anwesenheit'
+
+exports.sendAnwNotifications = functions.database.ref('/anwesenheiten/{personId}/status').onWrite( (event) => {
+
+    if(event.data.val() != 0)
+        return 0;
+
+    return event.data.ref.parent.once('value',  personSnap => {
+            const name = personSnap.val().name;
+
+            personSnap.child('subscriptions').forEach(subMail => {
+                sendAnwNotification(subMail.val(), name)
+            });
+            event.data.ref.parent.child('subscriptions').remove();
+        })
+  });
+
+  // Sends a welcome email to the given user.
+function sendAnwNotification(email, name) {
+    const mailOptions = {
+      from: `${APP_NAME} <noreply@firebase.com>`,
+      to: email,
+    };
+  
+    // The user subscribed to the newsletter.
+    mailOptions.subject = name + ` is wieder anwesend!`;
+    mailOptions.text = name + ` ist nun wieder im Raum I1.064 verfügbar.`;
+    return mailTransport.sendMail(mailOptions).then(() => {
+      return console.log('New Anw Noti send to: ', email);
+    });
+  }
+  ;
