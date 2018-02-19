@@ -1,11 +1,17 @@
 language: node_js
+
+node_js:
+  - "node"
   
 cache:
   directories:
   - node_modules
 
-script:
-  - npm run deploy
+before_install:
+  - cd functions
+
+before_deploy:
+  - cd ..
 
 deploy:
   provider: firebase
