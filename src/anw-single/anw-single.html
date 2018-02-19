@@ -8,6 +8,7 @@
 <link rel="import" href="../../styles/anw-style.html">
 <link rel="import" href="../notify-button/notify-button.html">
 <link rel="import" href="anw-sprechzeiten.html">
+<link rel="import" href="subscribe-button.html">
 
 <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
 
@@ -48,6 +49,17 @@
 
       .card-content {
         padding: 8px 16px 8px 16px;
+      }
+
+      .card-actions{
+        padding: 12px 16px 8px 16px;
+        text-align: center;
+        border: 0;
+        border-top: 1px solid #aaa;
+      }
+
+      .action {
+        padding: 8px;
       }
 
       .img-circle {
@@ -97,7 +109,6 @@
             <div class="img-circle">{{person.emoji}}</div>
           </template>
           <span class="title flex">[[person.name]]</span>
-          <notify-button person=[[person]] class="self-center"></notify-button>
         </div>
 
         <div class="card-content">
@@ -121,6 +132,17 @@
 
           </template>
 
+        </div>
+
+        <div class="layout horizontal center card-actions">
+          <div class="layout vertical action">
+            <notify-button person=[[person]] class="self-center"></notify-button>
+            <small>Notfiy</small>
+        </div>
+        <div class="layout vertical action">
+            <subscribe-button person=[[person]]  class="self-center"></subscribe-button>
+            <small>Subscribe</small>
+        </div>
         </div>
       </div>
 

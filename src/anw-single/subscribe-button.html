@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="subscribe-button">
+    <template>
+        <style>
+            paper-button {
+                padding: 0.7em 0.57em;
+            }
+            
+            .input {
+                margin-top: 0px;
+                text-align: left;
+                --paper-input-container-color: grey;
+                --paper-input-container-focus-color: black;
+            }
+
+            iron-icon {
+                padding-right: 6px;
+            }
+        </style>
+
+
+        <paper-icon-button id="btn" icon="communication:rss-feed" title="Subscribe" on-tap="_openDialog">
+        </paper-icon-button>
+
+        <paper-dialog>
+            <h2>Nachricht bei Anwesenheit von [[person.name]] an: </h2>
+            <paper-input  type="email" class="input" label="mail" value="{{mail}}" on-input="_reposition"></paper-input>
+            <paper-button on-tap="_subscribeMail" raised><iron-icon icon="send"></iron-icon>Speichern</paper-button>
+        </paper-dialog>
+
+    </template>
+</dom-module>
+<script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class SubscribeButton extends Polymer.Element {
+        static get is() {
+            return 'subscribe-button';
+        }
+
+        static get properties() {
+            return {
+                person: Object,
+                mail: String
+            };
+        }
+
+        _reposition(e) {
+            this.shadowRoot.querySelector("paper-dialog").center();
+        }
+
+        _openDialog(e) {
+            this.shadowRoot.querySelector("paper-dialog").open();
+        }
+
+        _subscribeMail() {
+            const mail = this.mail;
+
+            if (mail != null && mail !== "") {
+
+                    firebase.database().ref('anwesenheiten/'+this.person.key+'/subscriptions').push(mail)
+
+            }
+            this.set('mail', undefined);
+            this.shadowRoot.querySelector("paper-dialog").close();
+        }
+    }
+
+    window.customElements.define(SubscribeButton.is, SubscribeButton);
+</script>
