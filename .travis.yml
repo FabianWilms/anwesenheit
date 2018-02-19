@@ -4,6 +4,12 @@ cache:
   directories:
   - node_modules
 
+before_install:
+  - cd functions
+
+after_install:
+  - cd ..
+
 script:
   - npm run deploy
 
