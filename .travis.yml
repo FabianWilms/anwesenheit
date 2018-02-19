@@ -13,9 +13,6 @@ before_install:
 after_install:
   - cd ..
 
-script:
-  - npm run deploy
-
 deploy:
   provider: firebase
   skip_cleanup: true
