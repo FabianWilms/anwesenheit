@@ -10,7 +10,7 @@ cache:
 before_install:
   - cd functions
 
-after_install:
+before_deploy:
   - cd ..
 
 deploy:
