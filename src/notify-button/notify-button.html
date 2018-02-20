@@ -11,6 +11,10 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-down-animation.html">
+<link rel="import" href="../../bower_components/web-animations-js/web-animations.min.html">
 
 <link rel="import" href="../countdown-timer/countdown-timer.html">
 
@@ -76,7 +80,7 @@
             <small class="self-center">Message</small>
         </div>
 
-        <paper-dialog>
+        <paper-dialog entry-animation="scale-up-animation" exit-animation="scale-down-animation">
             <div class="layout vertical center-justified">
                 <h2>Nachricht an [[person.name]] senden</h2>
                 <paper-input autofocus class="input" label="Autor" value="{{author}}" on-input="_reposition">
