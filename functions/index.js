@@ -119,44 +119,48 @@ const nodemailer = require('nodemailer');
 const gmailEmail = functions.config().gmail.email;
 const gmailPassword = functions.config().gmail.password;
 const mailTransport = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: gmailEmail,
-    pass: gmailPassword,
-  },
+    service: 'gmail',
+    auth: {
+        user: gmailEmail,
+        pass: gmailPassword,
+    },
 });
 
-// Your company name to include in the emails
-// TODO: Change this to your app or company name to customize the email sent.
 const APP_NAME = 'I1.064 Anwesenheit'
 
-exports.sendAnwNotifications = functions.database.ref('/anwesenheiten/{personId}/status').onWrite( (event) => {
+/**
+ * Horcht auf Statusänderungen aller User.
+ * Wenn ein User wieder Anwesend (status==0) ist, wird eine Mail an alle seine Subscriber gesendet.
+ */
+exports.sendAnwNotifications = functions.database.ref('/anwesenheiten/{personId}/status').onWrite((event) => {
 
-    if(event.data.val() != 0)
+    if (event.data.val() != 0)
         return 0;
 
-    return event.data.ref.parent.once('value',  personSnap => {
-            const name = personSnap.val().name;
+    return event.data.ref.parent.once('value', personSnap => {
+        const name = personSnap.val().name;
 
-            personSnap.child('subscriptions').forEach(subMail => {
-                sendAnwNotification(subMail.val(), name)
-            });
-            event.data.ref.parent.child('subscriptions').remove();
-        })
-  });
+        personSnap.child('subscriptions').forEach(subMail => {
+            sendAnwNotification(subMail.val(), name)
+        });
+        event.data.ref.parent.child('subscriptions').remove();
+    })
+});
 
-  // Sends a welcome email to the given user.
+/**
+ * Sendet eine E-Mail mit dem Hinweis, welche Person (name) wieder anwesend ist.
+ * @param {string} email Die Adresse, an die die Mail versendet werden soll.
+ * @param {string} name Die Person, die wieder Anwesend ist.
+ */
 function sendAnwNotification(email, name) {
     const mailOptions = {
-      from: `${APP_NAME} <noreply@firebase.com>`,
-      to: email,
+        from: `${APP_NAME} <noreply@firebase.com>`,
+        to: email,
     };
-  
-    // The user subscribed to the newsletter.
-    mailOptions.subject = name + ` is wieder anwesend!`;
-    mailOptions.text = name + ` ist nun wieder im Raum I1.064 verfügbar.`;
+
+    mailOptions.subject =`${name} is wieder anwesend!`;
+    mailOptions.text = `${name} ist seit ${new Date()} wieder im Raum I1.064 verfügbar.`;
     return mailTransport.sendMail(mailOptions).then(() => {
-      return console.log('New Anw Noti send to: ', email);
+        return console.log('New Anw Noti send to: ', email);
     });
-  }
-  ;
+};
