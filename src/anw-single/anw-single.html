@@ -59,11 +59,14 @@
         padding-bottom: 8px;
         border: 0;
         border-top: 1px solid #000000bb;
-        border-bottom: 1px solid #000000bb;
       }
 
       .action {
         padding: 0px 8px;
+      }
+
+      .zeiten {
+        border-top: 1px solid #000000bb;
       }
 
       .img-circle {
@@ -132,7 +135,7 @@
           </div>
 
           <iron-collapse opened="{{showTimes}}">
-            <div class="collapse-content">
+            <div class="collapse-content zeiten">
               <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
             </div>
           </iron-collapse>
