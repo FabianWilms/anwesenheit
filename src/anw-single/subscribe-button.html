@@ -22,8 +22,25 @@
                 --paper-input-container-focus-color: black;
             }
 
+            paper-dialog {
+                width: 80%;
+                max-height: 50%;
+                overflow: auto;
+                display: inline-block;
+            }
+
+            @media only screen and (min-width: 720px) {
+                paper-dialog {
+                    width: 300px;
+                }
+            }
+
             iron-icon {
                 padding-right: 6px;
+            }
+
+            .secondary {
+                color: grey;
             }
         </style>
         <style include="iron-flex iron-flex-alignment"></style>
@@ -34,10 +51,13 @@
             <small class="self-center">Subscribe</small>
         </div>
 
-        <paper-dialog>
-            <h2>Nachricht bei Anwesenheit von [[person.name]] an: </h2>
-            <paper-input type="email" class="input" label="mail" value="{{mail}}" on-input="_reposition"></paper-input>
-            <paper-button on-tap="_subscribeMail" raised>
+        <paper-dialog class="layout vertical center-justified">
+            <h2>Subscribe </h2>
+            <span>Sobald [[person.name]] wieder anwesend ist, soll eine Mail an die folgende Adresse gesendet werden:</span>
+            <paper-input autofocus type="email" class="input" label="Mail" value="{{mail}}" on-input="_reposition">
+                <iron-icon class="secondary" icon="mail" slot="prefix"></iron-icon>
+            </paper-input>
+            <paper-button on-tap="_subscribeMail">
                 <iron-icon icon="send"></iron-icon>Speichern</paper-button>
         </paper-dialog>
 
@@ -72,12 +92,13 @@
             const mail = this.mail;
 
             if (mail != null && mail !== "") {
-
                 firebase.database().ref('anwesenheiten/' + this.person.key + '/subscriptions').push(mail)
-
             }
             this.set('mail', undefined);
             this.shadowRoot.querySelector("paper-dialog").close();
+            var toast = document.querySelector('#toast');
+            toast.text = `Sie werden über ${mail} Benachrichtigt, sobald ${this.person.name} wieder da ist.`;
+            toast.open();
         }
     }
 
