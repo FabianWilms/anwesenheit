@@ -9,6 +9,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="../countdown-timer/countdown-timer.html">
 
@@ -22,11 +23,11 @@
             countdown-timer:not([blocked]) {
                 display: none;
             }
-            
+
             paper-button {
                 padding: 0.7em 0.57em;
             }
-            
+
             .input {
                 margin-top: 0px;
                 text-align: left;
@@ -48,38 +49,33 @@
                 }
             }
         </style>
+        <style include="iron-flex iron-flex-alignment"></style>
 
         <app-localstorage-document key="blockedUntil[[person.key]]" data="{{blockedUntil}}">
         </app-localstorage-document>
 
-        <paper-icon-button id="btn" icon="communication:message" title="Nachricht senden" on-tap="_openDialog"
-                           blocked$="{{_isBlocked(blockedUntil)}}">
-        </paper-icon-button>
+        <div class="layout vertical">
+            <paper-icon-button class="self-center" id="btn" icon="communication:message" title="Nachricht senden" on-tap="_openDialog" blocked$="{{_isBlocked(blockedUntil)}}">
+            </paper-icon-button>
+            <small class="self-center">Message</small>
+        </div>
 
         <paper-dialog>
             <h2>Nachricht für [[person.name]]</h2>
             <paper-input class="input" label="Autor" value="{{author}}" on-input="_reposition"></paper-input>
             <paper-textarea class="input" label="Nachricht" value="{{message}}" on-input="_reposition"></paper-textarea>
-            <paper-button on-tap="_sendNotification" raised><iron-icon icon="send"></iron-icon>Senden</paper-button>
+            <paper-button on-tap="_sendNotification" raised>
+                <iron-icon icon="send"></iron-icon>Senden</paper-button>
         </paper-dialog>
- 
+
         <countdown-timer blocked$="{{_isBlocked(blockedUntil)}}" until="{{blockedUntil}}"></countdown-timer>
 
-        <iron-ajax
-                id="push"
-                method="post"
-                url="https://a.pushnotifier.de/1/sendToDevice"
-                handle-as="json"
-                content-type="application/x-www-form-urlencoded"
-                on-response="_handlePushoverResponse">
+        <iron-ajax id="push" method="post" url="https://a.pushnotifier.de/1/sendToDevice" handle-as="json" content-type="application/x-www-form-urlencoded"
+            on-response="_handlePushoverResponse">
         </iron-ajax>
 
-        <iron-ajax
-                id="firebase"
-                method="post"
-                url="https://anwesenheit-550a6.firebaseio.com/notify/[[person.key]].json" handle-as="json"
-                content-type="application/json"
-                on-response="_handleFirebaseResponse">
+        <iron-ajax id="firebase" method="post" url="https://anwesenheit-550a6.firebaseio.com/notify/[[person.key]].json" handle-as="json"
+            content-type="application/json" on-response="_handleFirebaseResponse">
         </iron-ajax>
 
     </template>
@@ -125,7 +121,7 @@
                         platform: navigator.platform
                     }
 
-                    firebaseRequest.body = {message, date, details};
+                    firebaseRequest.body = { message, date, details };
                     firebaseRequest.generateRequest();
 
                     if (typeof this.person.pushnotifier !== "undefined") {

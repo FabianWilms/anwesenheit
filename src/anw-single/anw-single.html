@@ -2,7 +2,9 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/iron-collapse-button/iron-collapse-button.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <link rel="import" href="../../styles/anw-style.html">
@@ -29,7 +31,7 @@
       .message {
         font-family: 'Roboto Slab', 'serif';
         font-size: 32px;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
         margin-top: 8px;
       }
 
@@ -43,6 +45,7 @@
       }
 
       .card-header .title {
+        text-align: left;
         font-size: 32px;
         font-weight: bold;
       }
@@ -51,22 +54,22 @@
         padding: 8px 16px 8px 16px;
       }
 
-      .card-actions{
-        padding: 12px 16px 8px 16px;
-        text-align: center;
+      .actions {
+        padding-top: 6px;
+        padding-bottom: 8px;
         border: 0;
-        border-top: 1px solid #aaa;
+        border-top: 1px solid #000000bb;
+        border-bottom: 1px solid #000000bb;
       }
 
       .action {
-        padding: 8px;
+        padding: 0px 8px;
       }
 
       .img-circle {
         border-radius: 50%;
         width: 45px;
         height: 45px;
-        margin-right: 8px;
         text-align: center;
         vertical-align: middle;
         line-height: 45px;
@@ -102,13 +105,13 @@
       <div id="contentdiv">
 
         <div class="layout horizontal center card-header">
+          <span class="title flex">[[person.name]]</span>
           <template is="dom-if" if="{{!person.emoji}}">
             <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]" class="img-circle"></iron-image>
           </template>
           <template is="dom-if" if="{{person.emoji}}">
             <div class="img-circle">{{person.emoji}}</div>
           </template>
-          <span class="title flex">[[person.name]]</span>
         </div>
 
         <div class="card-content">
@@ -119,36 +122,27 @@
             </template>
           </p>
 
-          <template is="dom-if" if="[[person.sprechzeiten]]">
+          <div class="layout horizontal center-justified actions">
+            <notify-button class="action" person="[[person]]"></notify-button>
+            <subscribe-button class="action" person=[[person]]></subscribe-button>
+            <div class="layout vertical self-center action">
+              <paper-icon-button class="self-center" on-tap="_changeState" icon="{{_getIcon(showTimes)}}"></paper-icon-button>
+              <small class="self-center">Zeiten</small>
+            </div>
+          </div>
 
-            <iron-collapse-button opened={{showTimes}}>
-              <div slot="collapse-trigger" class="flex">
-                <b>Sprechzeiten</b>
-              </div>
-              <div slot="collapse-content">
-                <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
-              </div>
-            </iron-collapse-button>
+          <iron-collapse opened="{{showTimes}}">
+            <div class="collapse-content">
+              <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
+            </div>
+          </iron-collapse>
 
-          </template>
-
-        </div>
-
-        <div class="layout horizontal center card-actions">
-          <div class="layout vertical action">
-            <notify-button person=[[person]] class="self-center"></notify-button>
-            <small>Notfiy</small>
-        </div>
-        <div class="layout vertical action">
-            <subscribe-button person=[[person]]  class="self-center"></subscribe-button>
-            <small>Subscribe</small>
-        </div>
         </div>
       </div>
 
       <div id="gifdiv" class="layout horizontal center changing" style="display: none">
         <video width="90%" autoplay>
-            <source id="gifsrc">
+          <source id="gifsrc">
         </video>
       </div>
 
@@ -189,6 +183,12 @@
           soundEnabled: {
             type: Boolean,
             value: true
+          },
+
+          showTimes: {
+            type: Boolean,
+            notify: true,
+            value: true
           }
         };
       }
@@ -202,6 +202,14 @@
           contentDiv.style.display = "inline-block";
           gifDiv.style.display = "none";
         });
+      }
+
+      _getIcon(showTimes) {
+        return showTimes ? "expand-more" : "expand-less";
+      }
+
+      _changeState(e) {
+        this.set('showTimes', !this.showTimes);
       }
 
       _personChanged(newPerson, oldPerson) {
