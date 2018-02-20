@@ -30,13 +30,20 @@
 
       .message {
         font-family: 'Roboto Slab', 'serif';
-        font-size: 32px;
+      }
+
+      div .message {
         margin-bottom: 8px;
         margin-top: 8px;
       }
 
-      .padd-span {
-        padding-left: 3px;
+      .message.main {
+        font-size: 32px;
+      }
+
+      .message.until {
+        font-size: 20px;
+        line-height: 10px;
       }
 
       .card-header {
@@ -126,12 +133,15 @@
         </div>
 
         <div class="card-content">
-          <p class="message">[[person.message]]
+          <div class="message">
+            <span class="message main">
+              [[person.message]]
+            </span>
             <template is="dom-if" if="[[person.until]]">
               <br>
-              <span class="padd-span">🗓️ [[person.until]]</span>
+              <span class="message until">(bis einschl. [[person.until]])</span>
             </template>
-          </p>
+          </div>
 
           <div class="layout horizontal center-justified actions">
             <notify-button class="action" person="[[person]]"></notify-button>
