@@ -94,6 +94,14 @@
         margin-right: auto;
         display: block
       }
+
+      paper-icon-button {
+        transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+      }
+
+      paper-icon-button[expand] {
+        transform: rotate(-180deg);
+      }
     </style>
 
     <style include="anw-style"></style>
@@ -129,7 +137,7 @@
             <notify-button class="action" person="[[person]]"></notify-button>
             <subscribe-button class="action" person=[[person]]></subscribe-button>
             <div class="layout vertical self-center action">
-              <paper-icon-button class="self-center" on-tap="_changeState" icon="{{_getIcon(showTimes)}}"></paper-icon-button>
+              <paper-icon-button class="self-center" on-tap="_changeState" expand$="[[showTimes]]" icon="expand-more"></paper-icon-button>
               <small class="self-center">Zeiten</small>
             </div>
           </div>
@@ -205,10 +213,6 @@
           contentDiv.style.display = "inline-block";
           gifDiv.style.display = "none";
         });
-      }
-
-      _getIcon(showTimes) {
-        return showTimes ? "expand-more" : "expand-less";
       }
 
       _changeState(e) {
