@@ -49,26 +49,13 @@
             connectedCallback() {
                 super.connectedCallback();
 
-                this._showAsyncDilbert();
+                const dilimg = this.shadowRoot.querySelector('#dilbertimg');
+                const dilUrl = "https://daily-dilbert.glitch.me/";
+                
+                dilimg.src = dilUrl + '?' + new Date();
                 setInterval(() => 
-                    this._showAsyncDilbert()
+                    dilimg.src = dilUrl + '?' + new Date()
                 , 3600000)
-
-            }
-
-            _showAsyncDilbert() {
-                const url = 'https://dilbert-api.glitch.me/json';
-
-                fetch(url)
-                    .then(result => {
-                        result.json().then(data => {
-                            let dilimg = this.shadowRoot.querySelector('#dilbertimg');
-                            dilimg.setAttribute('src', data.image);
-                        });
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
 
             }
 
