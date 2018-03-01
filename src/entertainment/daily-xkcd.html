@@ -49,26 +49,13 @@
             connectedCallback() {
                 super.connectedCallback();
 
-                this._showAsyncxkcd();
+                const xkcdimg = this.shadowRoot.querySelector('#xkcdimg');
+                const xkcdUrl = "https://daily-xkcd.glitch.me/";
+                
+                xkcdimg.src = xkcdUrl + '?' + new Date();
                 setInterval(() => 
-                    this._showAsyncxkcd()
-                , 3600000)
-
-            }
-
-            _showAsyncxkcd() {
-                const url = 'https://xkcd.com/info.0.json';
-
-                fetch(url)
-                    .then(result => {
-                        result.json().then(data => {
-                            let xkcdimg = this.shadowRoot.querySelector('#xkcdimg');
-                            xkcdimg.setAttribute('src', data.img);
-                        });
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                    xkcdimg.src = xkcdUrl + '?' + new Date()
+                , 43200000)
 
             }
 
