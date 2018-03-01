@@ -12,6 +12,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="daily-dilbert.html">
+<link rel="import" href="daily-xkcd.html">
 
 
 <dom-module id="entertainment-fab">
@@ -50,12 +51,24 @@
             <paper-progress id="dilbertprogress" min="0" max="2000"></paper-progress>
         </paper-dialog>
 
+        <paper-dialog id="xkcd" with-backdrop entry-animation="slide-from-left-animation" exit-animation="slide-right-animation">
+            <h1>Daily xkcd</h1>
+            <daily-xkcd></daily-xkcd>
+            <paper-progress id="xkcdprogress" min="0" max="2000"></paper-progress>
+        </paper-dialog>
+
         <div id="fab">
             <iron-collapse id="collapse" opened="{{fabopened}}" class="layout vertical">
                 <div class="layout horizontal center-justified">
                     <paper-fab mini
                         on-tap="activateDilbert"
-                        src="https://fabianwilms.github.io/anwesenheit/images/icons/dilbert.png"
+                        src="images/icons/dilbert.png"
+                        class="minifab"></paper-fab>
+                </div>
+                <div class="layout horizontal center-justified">
+                    <paper-fab mini
+                        on-tap="activateXkcd"
+                        src="images/icons/xkcd.png"
                         class="minifab"></paper-fab>
                 </div>
             </iron-collapse>
@@ -120,6 +133,23 @@
                     clearInterval(this.dialogInterval);
                 } else {
                     this.$.dilbertprogress.value += 1;
+                }
+            }, 10);
+        }
+
+        activateXkcd() {
+            this.toggleFab();
+            this.$.xkcd.open();
+            clearInterval(this.dialogInterval);
+
+            this.$.xkcdprogress.value = 0;
+            this.dialogInterval = setInterval(() => {
+
+                if (this.$.xkcdprogress.value === this.$.xkcdprogress.max) {
+                    this.$.xkcd.close();
+                    clearInterval(this.dialogInterval);
+                } else {
+                    this.$.xkcdprogress.value += 1;
                 }
             }, 10);
         }

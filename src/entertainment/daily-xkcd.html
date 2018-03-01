@@ -1,0 +1,79 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../../styles/anw-style.html">
+
+<dom-module id="daily-xkcd">
+    <template>
+        <style>
+            :host {
+                padding: 8px;
+            }
+
+            div {
+                width: 100%;
+            }
+
+            img {
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <style include="anw-style"></style>
+        <style include="iron-flex iron-flex-alignment"></style>
+
+        <div class="layout horizontal">
+            <img id="xkcdimg" src="">
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         *
+         */
+        class Dailyxkcd extends Polymer.Element {
+            static get is() {
+                return 'daily-xkcd';
+            }
+
+            static get properties() {
+                return {};
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+
+                this._showAsyncxkcd();
+                setInterval(() => 
+                    this._showAsyncxkcd()
+                , 3600000)
+
+            }
+
+            _showAsyncxkcd() {
+                const url = 'https://xkcd.com/info.0.json';
+
+                fetch(url)
+                    .then(result => {
+                        result.json().then(data => {
+                            let dilimg = this.shadowRoot.querySelector('#xkcdimg');
+                            dilimg.setAttribute('src', data.img);
+                        });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+
+            }
+
+        }
+
+        window.customElements.define(Dailyxkcd.is, Dailyxkcd);
+    </script>
+</dom-module>
