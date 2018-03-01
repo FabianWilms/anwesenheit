@@ -52,8 +52,6 @@
       * and trailing slashes (e.g., `/my-app/`).
       */
 
-     window.Polymer = {rootPath: '/anwesenheit/'};
-
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('service-worker.js', {scope: Polymer.rootPath}).then(function(registration) {
