@@ -62,8 +62,8 @@
                 fetch(url)
                     .then(result => {
                         result.json().then(data => {
-                            let dilimg = this.shadowRoot.querySelector('#xkcdimg');
-                            dilimg.setAttribute('src', data.img);
+                            let xkcdimg = this.shadowRoot.querySelector('#xkcdimg');
+                            xkcdimg.setAttribute('src', data.img);
                         });
                     })
                     .catch(err => {
