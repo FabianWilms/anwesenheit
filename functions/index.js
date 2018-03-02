@@ -15,9 +15,8 @@ const GET_SINGLE_INTENT = 'GET_SINGLE_ANWESENHEIT';
 const SINGLE_PARAM = 'mitarbeiter';
 
 exports.anwesenheitForAssistant = functions.https.onRequest((request, response) => {
-    var reqBody = JSON.stringify(request.body);
     console.log('headers: ' + JSON.stringify(request.headers));
-    console.log('body: ' + reqBody);
+    console.log('body: ' + JSON.stringify(request.body));
 
     const assistant = new Assistant({ request: request, response: response });
 
@@ -32,17 +31,17 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
             console.log(snapshot);
             var mitarbeiterWithStatus = getMitarbeiterWithStatus(snapshot.val());
 
-            var response = '';
-            response += getResponseTextForStatus(mitarbeiterWithStatus[0], 0);
-            response += getResponseTextForStatus(mitarbeiterWithStatus[1], 1);
-            response += getResponseTextForStatus(mitarbeiterWithStatus[2], 2);
-            response += getResponseTextForStatus(mitarbeiterWithStatus[3], 3);
+            var respText = '';
+            respText += getResponseTextForStatus(mitarbeiterWithStatus[0], 0);
+            respText += getResponseTextForStatus(mitarbeiterWithStatus[1], 1);
+            respText += getResponseTextForStatus(mitarbeiterWithStatus[2], 2);
+            respText += getResponseTextForStatus(mitarbeiterWithStatus[3], 3);
 
             console.log("<<<#getAllAnwesenheiten");
-            if(reqBody.originalRequest.source == "slack") {
-                response.json({'speech': response});
+            if(request.body.originalRequest.source == "slack") {
+                response.json({'speech': respText});
             } else {
-                assistant.tell(response);
+                assistant.tell(respText);
             }
         })
     }
@@ -53,9 +52,11 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
 
         console.log(`Mitarbeiter: ${mitarbeiterName}`);
 
+        var string = `Nein, ich weiß noch nicht wann ${mitarbeiterName} da ist. Mei hetz mi ned!`
+
         let botResponse = {
-            'speech': "Jajaja...ich bin schon dabei!",
-            'displayText': "Jajaja...ich bin schon dabei!"
+            'speech': string,
+            'displayText': string
         };
 
         console.log("<<<#getSingleAnwesenheit");
@@ -68,9 +69,15 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
     function getMitarbeiterWithStatus(data) {
         console.log(">>>#getMitarbeiterWithStatus");
         console.log(data);
-        var returnData = [[], [], []];
+        // Für jeden Status den wir kennen, ein Array
+        // [Anwesend, Unterwegs, Abwesend, Telearbeit]
+        // Alle anderen Status werden ignoriert
+        var returnData = [[], [], [], []];
         for (var key in data) {
-            returnData[parseInt(data[key].status)].push(data[key].name);
+            var tmpStatus = parseInt(data[key].status);
+            if(tmpStatus <= 3) {
+                returnData[tmpStatus].push(data[key].name);
+            }
         }
         console.log(returnData);
         console.log("<<<#getMitarbeiterWithStatus");
@@ -90,13 +97,13 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
 
         var returnText = "";
         if (count === 1) {
-            returnText += `${mitarbeiterNamen[0]} ist `;
+            returnText += `${mitarbeiterNamen[0]} ist`;
         } else if (count === 2) {
-            returnText += `${mitarbeiterNamen[0]} und ${mitarbeiterNamen[1]} sind `
+            returnText += `${mitarbeiterNamen[0]} und ${mitarbeiterNamen[1]} sind`
         } else if (count > 2) {
             for (var i = 0; i < count; i++) {
                 if (i === count - 1) {
-                    returnText += ` und ${mitarbeiterNamen[i]} sind `;
+                    returnText += ` und ${mitarbeiterNamen[i]} sind`;
                 } else {
                     returnText += `${mitarbeiterNamen[i]},`;
                 }
@@ -105,19 +112,19 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
 
         switch (status) {
             case 0:
-                returnText += " anwesend.";
+                returnText += " anwesend. ";
                 break;
             case 1:
-                returnText += " im Haus unterwegs.";
+                returnText += " im Haus unterwegs. ";
                 break;
             case 2:
-                returnText += " abwesend.";
+                returnText += " abwesend. ";
                 break;
             case 3:
-                returnText += " in Telearbeit.";
+                returnText += " in Telearbeit. ";
                 break;
             default:
-                returnText += " in einem merkwürdigen Zustand. Vielleicht in einer Paralleldimension?"
+                returnText += " in einem merkwürdigen Zustand. Vielleicht in einer Paralleldimension? "
                 break;
         }
 
