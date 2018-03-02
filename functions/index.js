@@ -98,14 +98,12 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
         var returnText = "";
         if (count === 1) {
             returnText += `${mitarbeiterNamen[0]} ist`;
-        } else if (count === 2) {
-            returnText += `${mitarbeiterNamen[0]} und ${mitarbeiterNamen[1]} sind`
-        } else if (count > 2) {
-            for (var i = 0; i < count; i++) {
-                if (i === count - 1) {
-                    returnText += ` und ${mitarbeiterNamen[i]} sind`;
+        } else {
+            for (var i = 0; i < count -1; i++) {
+                if (i === count - 2) {
+                    returnText += `${mitarbeiterNamen[i]} und ${mitarbeiterNamen[i+1]} sind`;
                 } else {
-                    returnText += `${mitarbeiterNamen[i]},`;
+                    returnText += `${mitarbeiterNamen[i]}, `;
                 }
             }
         }
