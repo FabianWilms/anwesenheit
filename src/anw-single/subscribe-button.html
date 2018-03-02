@@ -58,10 +58,10 @@
         <paper-dialog class="layout vertical center-justified" entry-animation="scale-up-animation" exit-animation="scale-down-animation">
             <h2>Subscribe </h2>
             <span>Sobald [[person.name]] wieder anwesend ist, soll <b>einmalig</b> eine Mail an die folgende Adresse gesendet werden:</span>
-            <paper-input autofocus type="email" class="input" label="Mail" value="{{mail}}" on-input="_reposition">
+            <paper-input autofocus type="email" class="input" label="Mail" invalid="{{invalid}}" value="{{mail}}" on-input="_reposition" error-message="Ungültige Mail-Adresse" required auto-validate>
                 <iron-icon class="secondary" icon="mail" slot="prefix"></iron-icon>
             </paper-input>
-            <paper-button on-tap="_subscribeMail">
+            <paper-button disabled="{{invalid}}" on-tap="_subscribeMail">
                 <iron-icon icon="send"></iron-icon>Speichern</paper-button>
         </paper-dialog>
 
@@ -80,7 +80,11 @@
         static get properties() {
             return {
                 person: Object,
-                mail: String
+                mail: String,
+                invalid: {
+                    type: Boolean,
+                    value: true
+                }
             };
         }
 
@@ -95,9 +99,8 @@
         _subscribeMail() {
             const mail = this.mail;
 
-            if (mail != null && mail !== "") {
-                firebase.database().ref('anwesenheiten/' + this.person.key + '/subscriptions').push(mail)
-            }
+            firebase.database().ref('anwesenheiten/' + this.person.key + '/subscriptions').push(mail)
+
             this.set('mail', undefined);
             this.shadowRoot.querySelector("paper-dialog").close();
             var toast = document.querySelector('#toast');
