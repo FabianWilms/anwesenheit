@@ -15,8 +15,9 @@ const GET_SINGLE_INTENT = 'GET_SINGLE_ANWESENHEIT';
 const SINGLE_PARAM = 'mitarbeiter';
 
 exports.anwesenheitForAssistant = functions.https.onRequest((request, response) => {
+    reqBody = JSON.stringify(request.body);
     console.log('headers: ' + JSON.stringify(request.headers));
-    console.log('body: ' + JSON.stringify(request.body));
+    console.log('body: ' + reqBody);
 
     const assistant = new Assistant({ request: request, response: response });
 
@@ -28,6 +29,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
     function getAllAnwesenheiten(assistant) {
         console.log('getAllAnwesenheiten');
         anwesenheiten.once("value", (snapshot) => {
+            console.log(snapshot);
             var mitarbeiterWithStatus = getMitarbeiterWithStatus(snapshot.val());
 
             var response = '';
@@ -36,7 +38,11 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
             response += getResponseTextForStatus(mitarbeiterWithStatus[2], 2);
             response += getResponseTextForStatus(mitarbeiterWithStatus[3], 3);
 
-            assistant.tell(response);
+            if(reqBody.originalRequest.source == "slack") {
+                response.json({'speech': response});
+            } else {
+                assistant.tell(response);
+            }
         })
     }
 
@@ -45,11 +51,9 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
 
         console.log(`Mitarbeiter: ${mitarbeiterName}`);
 
-
         let botResponse = {
             'speech': "Jajaja...ich bin schon dabei!",
-            'displayText': "Testantwort von mir. Hallo!",
-            'text': "Slack Antwort?"
+            'displayText': "Jajaja...ich bin schon dabei!"
         };
 
         response.json(botResponse);
@@ -59,6 +63,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
      * Returns an Array with the status as an index. At each index there is the name of the person with this status.
      */
     function getMitarbeiterWithStatus(data) {
+        console.log(data);
         var returnData = [[], [], []];
         for (var key in data) {
             returnData[parseInt(data[key].status)].push(data[key].name);
