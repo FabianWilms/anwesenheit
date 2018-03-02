@@ -128,6 +128,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
 });
 
 const nodemailer = require('nodemailer');
+const moment = require('moment');
 // Configure the email transport using the default SMTP transport and a GMail account.
 // For Gmail, enable these:
 // 1. https://www.google.com/settings/security/lesssecureapps
@@ -176,8 +177,10 @@ function sendAnwNotification(email, name) {
         to: email,
     };
 
+    moment.locale('de');
+
     mailOptions.subject =`${name} is wieder anwesend!`;
-    mailOptions.text = `${name} ist seit ${new Date()} wieder im Raum I1.064 verfügbar.`;
+    mailOptions.text = `${name} ist seit ${moment().format('dddd, DD.MMM HH:mm Uhr,')} wieder im Raum I1.064 verfügbar.`;
     return mailTransport.sendMail(mailOptions).then(() => {
         return console.log('New Anw Noti send to: ', email);
     });
