@@ -15,7 +15,7 @@ const GET_SINGLE_INTENT = 'GET_SINGLE_ANWESENHEIT';
 const SINGLE_PARAM = 'mitarbeiter';
 
 exports.anwesenheitForAssistant = functions.https.onRequest((request, response) => {
-    reqBody = JSON.stringify(request.body);
+    var reqBody = JSON.stringify(request.body);
     console.log('headers: ' + JSON.stringify(request.headers));
     console.log('body: ' + reqBody);
 
