@@ -45,8 +45,14 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
 
         console.log(`Mitarbeiter: ${mitarbeiterName}`);
 
-        assistant.tell("Jajaja...ich bin schon dabei!");
-        return "Testantwort von mir. Hallo!";
+
+        let botResponse = {
+            'speech': "Jajaja...ich bin schon dabei!",
+            'displayText': "Testantwort von mir. Hallo!",
+            'text': "Slack Antwort?"
+        };
+
+        response.json(botResponse);
     }
 
     /**
