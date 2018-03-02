@@ -27,7 +27,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
     assistant.handleRequest(actionMap);
 
     function getAllAnwesenheiten(assistant) {
-        console.log('getAllAnwesenheiten');
+        console.log(">>>#getAllAnwesenheiten");
         anwesenheiten.once("value", (snapshot) => {
             console.log(snapshot);
             var mitarbeiterWithStatus = getMitarbeiterWithStatus(snapshot.val());
@@ -38,6 +38,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
             response += getResponseTextForStatus(mitarbeiterWithStatus[2], 2);
             response += getResponseTextForStatus(mitarbeiterWithStatus[3], 3);
 
+            console.log("<<<#getAllAnwesenheiten");
             if(reqBody.originalRequest.source == "slack") {
                 response.json({'speech': response});
             } else {
@@ -47,6 +48,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
     }
 
     function getSingleAnwesenheit(assistant) {
+        console.log(">>>#getSingleAnwesenheit");
         const mitarbeiterName = assistant.getArgument(SINGLE_PARAM);
 
         console.log(`Mitarbeiter: ${mitarbeiterName}`);
@@ -56,6 +58,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
             'displayText': "Jajaja...ich bin schon dabei!"
         };
 
+        console.log("<<<#getSingleAnwesenheit");
         response.json(botResponse);
     }
 
@@ -63,12 +66,14 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
      * Returns an Array with the status as an index. At each index there is the name of the person with this status.
      */
     function getMitarbeiterWithStatus(data) {
+        console.log(">>>#getMitarbeiterWithStatus");
         console.log(data);
         var returnData = [[], [], []];
         for (var key in data) {
             returnData[parseInt(data[key].status)].push(data[key].name);
         }
         console.log(returnData);
+        console.log("<<<#getMitarbeiterWithStatus");
         return returnData;
     }
 
@@ -76,6 +81,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
      * Returns a Text with the names and the text corresponding to the status of each mitarbeiter.
      */
     function getResponseTextForStatus(mitarbeiterNamen, status) {
+        console.log(">>>#getResponseTextForStatus");
         var count = mitarbeiterNamen.length;
 
         if (count === 0) {
@@ -116,6 +122,7 @@ exports.anwesenheitForAssistant = functions.https.onRequest((request, response) 
         }
 
         console.log(returnText);
+        console.log("<<<#getResponseTextForStatus");
         return returnText;
     }
 });
