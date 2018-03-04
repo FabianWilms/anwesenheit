@@ -5,7 +5,7 @@
 
 <link rel="import" href="../../styles/anw-style.html">
 
-<dom-module id="daily-dilbert">
+<dom-module id="daily-xkcd">
     <template>
         <style>
             :host {
@@ -26,7 +26,7 @@
         <style include="iron-flex iron-flex-alignment"></style>
 
         <div class="layout horizontal">
-            <img id="dilbertimg" src="">
+            <img id="xkcdimg" src="">
         </div>
 
     </template>
@@ -37,9 +37,9 @@
          * @polymer
          *
          */
-        class DailyDilbert extends Polymer.Element {
+        class Dailyxkcd extends Polymer.Element {
             static get is() {
-                return 'daily-dilbert';
+                return 'daily-xkcd';
             }
 
             static get properties() {
@@ -49,18 +49,18 @@
             connectedCallback() {
                 super.connectedCallback();
 
-                const dilimg = this.shadowRoot.querySelector('#dilbertimg');
-                const dilUrl = "https://daily-dilbert.glitch.me/";
+                const xkcdimg = this.shadowRoot.querySelector('#xkcdimg');
+                const xkcdUrl = "https://daily-xkcd.glitch.me/";
                 
-                dilimg.src = dilUrl + '?' + new Date();
+                xkcdimg.src = xkcdUrl + '?' + new Date();
                 setInterval(() => 
-                    dilimg.src = dilUrl + '?' + new Date()
+                    xkcdimg.src = xkcdUrl + '?' + new Date()
                 , 43200000)
 
             }
 
         }
 
-        window.customElements.define(DailyDilbert.is, DailyDilbert);
+        window.customElements.define(Dailyxkcd.is, Dailyxkcd);
     </script>
 </dom-module>
