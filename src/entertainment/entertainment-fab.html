@@ -47,7 +47,7 @@
         <paper-dialog id="dilbert" with-backdrop entry-animation="slide-from-left-animation" exit-animation="slide-right-animation">
             <h1>Daily Dilbert</h1>
             <daily-dilbert></daily-dilbert>
-            <paper-progress id="dilbertprogress" min="0" max="1000"></paper-progress>
+            <paper-progress id="dilbertprogress" min="0" max="2000"></paper-progress>
         </paper-dialog>
 
         <div id="fab">
@@ -115,7 +115,7 @@
             this.$.dilbertprogress.value = 0;
             this.dialogInterval = setInterval(() => {
 
-                if (this.$.dilbertprogress.value === 1000) {
+                if (this.$.dilbertprogress.value === this.$.dilbertprogress.max) {
                     this.$.dilbert.close();
                     clearInterval(this.dialogInterval);
                 } else {

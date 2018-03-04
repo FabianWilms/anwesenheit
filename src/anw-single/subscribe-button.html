@@ -1,0 +1,106 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="subscribe-button">
+    <template>
+        <style>
+            paper-button {
+                padding: 0.7em 0.57em;
+            }
+
+            .input {
+                margin-top: 0px;
+                text-align: left;
+                --paper-input-container-color: grey;
+                --paper-input-container-focus-color: black;
+            }
+
+            paper-dialog {
+                width: 80%;
+                max-height: 80%;
+                overflow: auto;
+                display: inline-block;
+            }
+
+            @media only screen and (min-width: 720px) {
+                paper-dialog {
+                    width: 300px;
+                }
+            }
+
+            iron-icon {
+                padding-right: 6px;
+            }
+
+            .secondary {
+                color: grey;
+            }
+        </style>
+        <style include="iron-flex iron-flex-alignment"></style>
+
+        <div class="layout vertical">
+            <paper-icon-button class="self-center" id="btn" icon="social:notifications" title="Subscribe" on-tap="_openDialog">
+            </paper-icon-button>
+            <small class="self-center">Subscribe</small>
+        </div>
+
+        <paper-dialog class="layout vertical center-justified">
+            <h2>Subscribe </h2>
+            <span>Sobald [[person.name]] wieder anwesend ist, soll <b>einmalig</b> eine Mail an die folgende Adresse gesendet werden:</span>
+            <paper-input autofocus type="email" class="input" label="Mail" value="{{mail}}" on-input="_reposition">
+                <iron-icon class="secondary" icon="mail" slot="prefix"></iron-icon>
+            </paper-input>
+            <paper-button on-tap="_subscribeMail">
+                <iron-icon icon="send"></iron-icon>Speichern</paper-button>
+        </paper-dialog>
+
+    </template>
+</dom-module>
+<script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class SubscribeButton extends Polymer.Element {
+        static get is() {
+            return 'subscribe-button';
+        }
+
+        static get properties() {
+            return {
+                person: Object,
+                mail: String
+            };
+        }
+
+        _reposition(e) {
+            this.shadowRoot.querySelector("paper-dialog").center();
+        }
+
+        _openDialog(e) {
+            this.shadowRoot.querySelector("paper-dialog").open();
+        }
+
+        _subscribeMail() {
+            const mail = this.mail;
+
+            if (mail != null && mail !== "") {
+                firebase.database().ref('anwesenheiten/' + this.person.key + '/subscriptions').push(mail)
+            }
+            this.set('mail', undefined);
+            this.shadowRoot.querySelector("paper-dialog").close();
+            var toast = document.querySelector('#toast');
+            toast.text = `Sie werden über ${mail} Benachrichtigt, sobald ${this.person.name} wieder da ist.`;
+            toast.open();
+        }
+    }
+
+    window.customElements.define(SubscribeButton.is, SubscribeButton);
+</script>
