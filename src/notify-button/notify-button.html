@@ -166,7 +166,8 @@
                                         method: 'PUT',
                                         headers: {
                                             'Authorization': authheader,
-                                            'X-AppToken': appToken
+                                            'X-AppToken': appToken,
+                                            'Content-Type': 'application/json'
                                         },
                                         body: JSON.stringify({
                                             devices: devices,
@@ -180,7 +181,7 @@
         }
 
         _isBlocked(date) {
-
+            return false;
             if (typeof this.blockedUntil === "undefined") {
                 return false;
             }
