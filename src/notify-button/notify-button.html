@@ -33,7 +33,6 @@
                 line-height: 40px;
                 height: 40px;
             }
-
             paper-button {
                 padding: 0.7em 0.57em;
                 margin: 8px;
@@ -137,42 +136,20 @@
             const author = this.author;
             if (message != null && message !== "") {
                 if (!this._isBlocked()) {
-                    var date = new Date();
-                    var firebaseRequest = this.shadowRoot.querySelector('#firebase');
+                    let date = new Date();
+                    let firebaseRequest = this.shadowRoot.querySelector('#firebase');
 
-                    var details = {
+                    let details = {
                         author,
                         agent: navigator.userAgent,
                         platform: navigator.platform
-                    }
+                    };
 
                     firebaseRequest.body = { message, date, details };
                     firebaseRequest.generateRequest();
 
-                    if (typeof this.person.pushnotifier !== "undefined") {
-                        const appToken = this.person.pushnotifier.apptoken;
-                        const apiToken = this.person.pushnotifier.apitoken;
-                        const deviceID = this.person.pushnotifier.device;
-                        const app = this.person.pushnotifier.app;
+                    this._sendPushNoti(message, author, date);
 
-                        const type = "HIDDENURL";
-                        const hiddenURL = "https://fabianwilms.github.io/anwctrl/";
-                        const content = message + " | von " + author + " | am " + date;
-
-                        const pushRequest = this.shadowRoot.querySelector('#push');
-
-                        pushRequest.body = {
-                            appToken,
-                            apiToken,
-                            deviceID,
-                            type,
-                            app,
-                            hiddenURL,
-                            content
-                        };
-
-                        pushRequest.generateRequest();
-                    }
                 }
             }
             this.set('message', undefined);
@@ -180,18 +157,67 @@
             this.shadowRoot.querySelector("paper-dialog").close();
         }
 
+        _sendPushNoti(message, author, date) {
+            if (this.person.pushnotifier !== undefined) {
+                const appToken = this.person.pushnotifier.apptoken;
+
+                firebase.database()
+                    .ref('/pushnotifier')
+                    .once('value')
+                    .then(snap => snap.val())
+                    .then(val => {
+
+                        const apiToken = val.apitoken;
+                        const app = val.appid;
+
+                        const redirectURL = "https://fabianwilms.github.io/anwctrl/";
+                        const notiURL = "https://api.pushnotifier.de/v2/notifications/notification";
+                        const deviceURL = "https://api.pushnotifier.de/v2/devices";
+                        const content = message + " | von " + author + " | am " + date;
+                        const authheader = 'Basic ' + btoa(app + ':' + apiToken);
+
+                        fetch(deviceURL, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': authheader,
+                                'X-AppToken': appToken
+                            }
+                        })
+                            .then(response =>
+                                response.json().then(body => {
+
+                                    let devices = Object.values(body).map(device => device.id);
+
+                                    fetch(notiURL, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Authorization': authheader,
+                                            'X-AppToken': appToken,
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            devices: devices,
+                                            content: content,
+                                            url: redirectURL
+                                        })
+                                    }).then(this._handlePushoverResponse)
+                                }));
+                    });
+            }
+        }
+
         _isBlocked(date) {
 
             if (typeof this.blockedUntil === "undefined") {
                 return false;
             }
-            var future = new Date(this.blockedUntil);
-            var timeDiff = future.getTime() - new Date();
+            let future = new Date(this.blockedUntil);
+            let timeDiff = future.getTime() - new Date();
             return timeDiff > 0;
         }
 
         _handleFirebaseResponse(e) {
-            var BLOCK_TIME_MINUTES = 5;
+            let BLOCK_TIME_MINUTES = 5;
             this.set('blockedUntil', new Date(new Date().getTime() + BLOCK_TIME_MINUTES * 60000));
             var toast = document.querySelector('#toast');
             toast.text = `Nachricht wurde an ${this.person.name} gesendet!`;
