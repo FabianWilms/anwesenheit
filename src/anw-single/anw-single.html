@@ -227,6 +227,7 @@
 
       _changeState(e) {
         this.set('showTimes', !this.showTimes);
+        gtag('event', `show sprechzeiten`, {'event_category' : 'settings', 'value':this.showTimes});
       }
 
       _personChanged(newPerson, oldPerson) {

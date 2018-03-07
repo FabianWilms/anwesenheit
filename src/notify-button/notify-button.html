@@ -132,6 +132,8 @@
         }
 
         _sendNotification() {
+            gtag('event', `notify ${this.person.name}`, {'event_category' : 'interaction', 'value' : this.author});
+
             const message = this.message;
             const author = this.author;
             if (message != null && message !== "") {

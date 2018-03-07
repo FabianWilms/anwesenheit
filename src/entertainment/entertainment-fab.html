@@ -125,6 +125,8 @@
         }
 
         activateDilbert() {
+            gtag('event', `show dilbert`, {'event_category' : 'entertainment'});
+
             this.toggleFab();
             this.$.dilbert.open();
             clearInterval(this.dialogInterval);
@@ -142,6 +144,8 @@
         }
 
         activateXkcd() {
+            gtag('event', `show xkcd`, {'event_category' : 'entertainment'});
+
             this.toggleFab();
             this.$.xkcd.open();
             clearInterval(this.dialogInterval);
