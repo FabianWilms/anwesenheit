@@ -51,6 +51,7 @@
 
         _updateSoundState() {
             this.set('soundEnabled', !this.soundEnabled);
+            gtag('event', `enable sounds`, {'event_category' : 'settings', 'value':this.soundEnabled});
         }
     }
 
