@@ -20,37 +20,63 @@
                 display: block;
             }
 
+            .header {
+                color: var(--primary-text-color);
+                padding: 0px 16px;
+            }
+
             .legend paper-card {
                 margin: 8px;
             }
 
-            .loading {
-                height: 100%;
+            @keyframes play180 {
+                0% {
+                    background-position: 0px 0px;
+                }
+                100% {
+                    background-position: -4320px 0px;
+                }
             }
 
-            .header {
-                color: var(--primary-text-color);
-                padding: 0px 16px;
+            .loading {
+                position: absolute;
+                /*it can be fixed too*/
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+
+                margin: auto;
+                width: 24px;
+                height: 24px;
+                max-width: 100%;
+                max-height: 100%;
+
+                background-image: url(../../images/svg/anw_loading.svg);
+                animation-duration: 3000ms;
+                animation-timing-function: steps(180);
+                background-repeat: no-repeat;
+                animation-name: play180;
+                animation-iteration-count: infinite;
+
+                transform: scale(15);
             }
         </style>
 
         <style include="iron-flex iron-flex-alignment"></style>
 
-        <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com"
-                      database-url="https://anwesenheit-550a6.firebaseio.com"
-                      api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
-                      project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com"
-                      messaging-sender-id="44085346030">
+        <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com" database-url="https://anwesenheit-550a6.firebaseio.com" api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
+            project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com" messaging-sender-id="44085346030">
         </firebase-app>
 
         <firebase-document path="anwesenheiten" data="{{anwesenheiten}}">
         </firebase-document>
 
+        <div class="layout horizontal header">
+            <h1 class="flex">Anwesenheit in I1.064</h1>
+            <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
+        </div>
         <template is="dom-if" if="[[anwesenheiten.sebastian]]">
-            <div class="layout horizontal header">
-                <h1 class="flex">Anwesenheit in I1.064</h1>
-                <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
-            </div>
             <div>
                 <div class="layout horizontal wrap center-justified">
 
@@ -66,13 +92,10 @@
                 </div>
             </div>
         </template>
-
         <entertainment-fab></entertainment-fab>
 
         <template is="dom-if" if="[[!anwesenheiten.sebastian]]">
-            <div class="layout horizontal center-justified loading">
-                <paper-spinner active></paper-spinner>
-            </div>
+            <div class="loading"></div>
         </template>
 
     </template>
