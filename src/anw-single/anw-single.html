@@ -65,15 +65,10 @@
         padding-top: 6px;
         padding-bottom: 8px;
         border: 0;
-        border-top: 1px solid #000000bb;
       }
 
       .action {
         padding: 0px 8px;
-      }
-
-      .zeiten {
-        border-top: 1px solid #000000bb;
       }
 
       .img-circle {
@@ -102,12 +97,35 @@
         display: block
       }
 
+      hr {
+        border: 0;
+        background-color: black;
+        height: 1px;
+      }
+
+      .scaling {
+        width: 100%;
+        position: absolute;
+        left: 0px;
+        bottom: -14px;
+        transition: all ease 480ms;
+        transform: scaleX(0);
+      }
+
+      .scaling[opened] {
+        transform: scaleX(1);
+      }
+
       paper-icon-button {
         transition: transform .3s cubic-bezier(.4, 0, .2, 1);
       }
 
       paper-icon-button[expand] {
         transform: rotate(-180deg);
+      }
+
+      iron-collapse {
+        --iron-collapse-transition-duration: 500ms;
       }
     </style>
 
@@ -143,17 +161,22 @@
             </template>
           </div>
 
-          <div class="layout horizontal center-justified actions">
-            <notify-button class="action" person="[[person]]"></notify-button>
-            <subscribe-button class="action" person=[[person]]></subscribe-button>
-            <div class="layout vertical self-center action">
-              <paper-icon-button class="self-center" on-tap="_changeState" expand$="[[showTimes]]" icon="expand-more"></paper-icon-button>
-              <small class="self-center">Zeiten</small>
+          <hr>
+
+          <div style="position: relative;">
+            <div class="layout horizontal center-justified actions">
+              <notify-button class="action" person="[[person]]"></notify-button>
+              <subscribe-button class="action" person=[[person]]></subscribe-button>
+              <div class="layout vertical self-center action">
+                <paper-icon-button class="self-center" on-tap="_changeState" expand$="[[showTimes]]" icon="expand-more"></paper-icon-button>
+                <small class="self-center">Zeiten</small>
+              </div>
             </div>
+            <hr class="scaling" opened$="{{showTimes}}">
           </div>
 
           <iron-collapse opened="{{showTimes}}">
-            <div class="collapse-content zeiten">
+            <div class="collapse-content">
               <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
             </div>
           </iron-collapse>
@@ -227,7 +250,7 @@
 
       _changeState(e) {
         this.set('showTimes', !this.showTimes);
-        gtag('event', `show sprechzeiten`, {'event_category' : 'settings', 'value':this.showTimes});
+        gtag('event', `show sprechzeiten`, { 'event_category': 'settings', 'value': this.showTimes });
       }
 
       _personChanged(newPerson, oldPerson) {
