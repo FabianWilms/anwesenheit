@@ -1,6 +1,6 @@
 {
-  "name": "anwesenheit",
-  "short_name": "anwesenheit",
+  "name": "Anwesenheit",
+  "short_name": "Anwesenheit",
   "description": "Anwesenheit des Büros",
   "start_url": "index.html",
   "display": "standalone",
@@ -24,6 +24,6 @@
    "density": "4.0"
   }
  ],
-  "background_color": "#ffffff",
-  "theme_color": "#448aff"
+  "background_color": "#fff",
+  "theme_color": "#000"
 }
