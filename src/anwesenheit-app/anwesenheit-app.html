@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -59,19 +61,20 @@
         <div class="layout horizontal header">
             <h1 class="flex">Anwesenheit</h1>
             <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
+            <paper-icon-button class="self-center" icon="social:share" on-tap="share"></paper-icon-button>
         </div>
 
         <div>
             <div class="layout horizontal wrap center-justified">
 
-                <template is="dom-if" if="{{personen}}">
-                    <template is="dom-repeat" items="{{personen}}">
+                <template is="dom-if" if="[[personen]]">
+                    <template is="dom-repeat" items="[[personen]]">
                         <anw-single on-delete="_onDeleteEntry" sound-enabled="{{soundEnabled}}" key="{{item}}">
                         </anw-single>
                     </template>
                 </template>
 
-                <template is="dom-if" if="{{!personen.length}}">
+                <template is="dom-if" if="[[!personen.length]]">
                     <div class="floating layout horizontal center-justified" style="height: 100%">
                         <svg class="self-center" style="width:128px;height:128px; padding: 16px;" viewBox="0 0 24 24">
                             <path fill="#000000"
@@ -116,6 +119,39 @@
                         notify: true
                     }
                 };
+            }
+
+            ready() {
+                super.ready();
+
+                setTimeout(() => {
+                    let params = (new URL(document.location)).searchParams;
+                    let toBeAdded = params.getAll('track');
+
+                    toBeAdded.forEach(element => {
+                        console.warn(element);
+                        console.warn(JSON.stringify(this.personen));
+                        if (!this.personen.includes(element)) {
+                            this.push('personen', element);
+                        }
+                    })
+                }, 300);
+            }
+
+            share(e) {
+                var newurl = new URL(document.location.href.split("?")[0]);
+
+                this.personen.forEach(element => {
+                    newurl.searchParams.append("track", element);
+                })
+
+                if (navigator.share !== undefined) {
+                    navigator.share({
+                        url: newurl.href
+                    });
+                } else {
+                    alert("Teile deine Konfiguration mit anderen:\n\n" + newurl.href);
+                }
             }
 
             addEntry(event) {
