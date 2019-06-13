@@ -23,15 +23,33 @@
       }
 
       #remove-button {
-        display: none;
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.4s ease-in-out;
+      }
+
+      #avatar-or-emoji {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        visibility: visible;
+        opacity: 1;
+        transition: all 0.4s ease-in-out;
       }
 
       paper-card:hover #remove-button {
-        display: inherit;
+        transform: rotate(360deg);
+        visibility: visible;
+        opacity: 1;
       }
 
       paper-card:hover #avatar-or-emoji {
-        display: none;
+        transform: rotate(360deg);
+        visibility: hidden;
+        opacity: 0;
       }
 
       paper-card {
@@ -429,7 +447,7 @@
       removePerson(event) {
         var shouldRemove = false;
 
-        if(this.person.name) {
+        if (this.person.name) {
           var shouldRemove = confirm(`Wollen Sie ${this.person.name} wirklich entfernen?\nSie können die Person mit dem Key "${this.key}" später wieder hinzufügen.`);
         } else {
           shouldRemove = true;
@@ -468,7 +486,10 @@
           }
         }, 5000);
 
-        if (typeof newPerson !== "undefined" && typeof oldPerson !== "undefined") {
+        if (typeof newPerson !== "undefined" &&
+          typeof oldPerson !== "undefined" &&
+          Object.entries(newPerson).length > 0 &&
+          Object.entries(oldPerson).length > 0) {
           if (newPerson.status !== oldPerson.status && typeof oldPerson.status !== "undefined") {
 
             this._showAsyncGif(parseInt(newPerson.status));
@@ -509,17 +530,21 @@
         fetch(gUrl)
           .then(result => {
             result.json().then(data => {
-              let contentDiv = this.shadowRoot.querySelector('#contentdiv');
-              let gifDiv = this.shadowRoot.querySelector('#gifdiv');
-              let video = this.shadowRoot.querySelector('video');
-              let height = this.shadowRoot.querySelector('paper-card').offsetHeight;
-              let source = this.shadowRoot.querySelector('#gifsrc');
+              if (data.hasOwnProperty("data") && data.data.hasOwnProperty("images") && data.data.images.hasOwnProperty("original_mp4")) {
+                let contentDiv = this.shadowRoot.querySelector('#contentdiv');
+                let gifDiv = this.shadowRoot.querySelector('#gifdiv');
+                let video = this.shadowRoot.querySelector('video');
+                let height = this.shadowRoot.querySelector('paper-card').offsetHeight;
+                let source = this.shadowRoot.querySelector('#gifsrc');
 
-              contentDiv.style.display = "none";
-              gifDiv.setAttribute("style", `display:"inline-block"; height:${height}px;`);
-              source.setAttribute('src', data.data.images.original_mp4.mp4);
-              video.load();
-              video.play();
+                contentDiv.style.display = "none";
+                gifDiv.setAttribute("style", `display:"inline-block"; height:${height}px;`);
+                source.setAttribute('src', data.data.images.original_mp4.mp4);
+                video.load();
+                video.play();
+              } else {
+                console.warn("Data didn't have the expected keys: ", data);
+              }
             })
           })
           .catch(error => { console.log(error) });
