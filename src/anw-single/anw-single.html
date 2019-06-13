@@ -344,7 +344,8 @@
               </span>
             </div>
           </div>
-          <paper-button on-tap="removePerson" style="margin-bottom: 16px; background: white;" raised class="self-center error">
+          <paper-button on-tap="removePerson" style="margin-bottom: 16px; background: white;" raised
+            class="self-center error">
             <iron-icon icon="delete"></iron-icon>Person entfernen
           </paper-button>
         </div>
@@ -426,7 +427,17 @@
       }
 
       removePerson(event) {
-        console.warn("Removing ", this.key);
+        var shouldRemove = false;
+
+        if(this.person.name) {
+          var shouldRemove = confirm(`Wollen Sie ${this.person.name} wirklich entfernen?\nSie können die Person mit dem Key "${this.key}" später wieder hinzufügen.`);
+        } else {
+          shouldRemove = true;
+        }
+
+        if (shouldRemove) {
+          this.dispatchEvent(new CustomEvent('delete', { detail: { key: this.key } }));
+        }
       }
 
       _isLoadingVisible(person, error) {

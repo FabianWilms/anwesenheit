@@ -4,7 +4,8 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 
 
 <link rel="import" href="../../styles/app-theme.html">
@@ -25,42 +26,75 @@
                 padding: 0px 16px;
             }
 
-            .legend paper-card {
-                margin: 8px;
+            .floating {
+                display: inline;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
             }
 
-
+            paper-fab {
+                --paper-fab-background: black;
+                --paper-fab-keyboard-focus-background: grey;
+                position: fixed;
+                right: 25px;
+                bottom: 30px;
+            }
         </style>
 
         <style include="iron-flex iron-flex-alignment"></style>
 
-        <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com" database-url="https://anwesenheit-550a6.firebaseio.com" api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
-            project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com" messaging-sender-id="44085346030">
+        <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com"
+            database-url="https://anwesenheit-550a6.firebaseio.com" api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
+            project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com"
+            messaging-sender-id="44085346030">
         </firebase-app>
 
+        <app-localstorage-document key="personen" data="{{personen}}">
+        </app-localstorage-document>
+
         <div class="layout horizontal header">
-            <h1 class="flex">Anwesenheit in D.04.23</h1>
+            <h1 class="flex">Anwesenheit</h1>
             <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
         </div>
 
         <div>
             <div class="layout horizontal wrap center-justified">
 
-                <anw-single sound-enabled="{{soundEnabled}}" key="sebastian">
-                </anw-single>
+                <template is="dom-if" if="{{personen}}">
+                    <template is="dom-repeat" items="{{personen}}">
+                        <anw-single on-delete="_onDeleteEntry" sound-enabled="{{soundEnabled}}" key="{{item}}">
+                        </anw-single>
+                    </template>
+                </template>
 
-                <anw-single sound-enabled="{{soundEnabled}}" key="michael">
-                </anw-single>
+                <template is="dom-if" if="{{!personen.length}}">
+                    <div class="floating layout horizontal center-justified" style="height: 100%">
+                        <svg class="self-center" style="width:128px;height:128px; padding: 16px;" viewBox="0 0 24 24">
+                            <path fill="#000000"
+                                d="M15,3H12V5H15V21H5V5H8V3H5A2,2 0 0,0 3,5V21A2,2 0 0,0 5,23H15A2,2 0 0,0 17,21V5A2,2 0 0,0 15,3M10,7A2,2 0 0,1 12,9A2,2 0 0,1 10,11A2,2 0 0,1 8,9A2,2 0 0,1 10,7M14,15H6V14C6,12.67 8.67,12 10,12C11.33,12 14,12.67 14,14V15M14,18H6V17H14V18M10,20H6V19H10V20M11,5H9V1H11V5M19,12V7H21V12H19M19,16V14H21V16H19Z" />
+                        </svg>
+                        <div class="layout vertical self-center">
+                            <span style="font-size: 32px; padding-bottom: 16px;">Sie verfolgen noch keine
+                                Personen</span>
+                            <div class="layout vertical">
+                                <paper-button class="self-center" on-tap="addEntry" raised>
+                                    <iron-icon icon="add" style="padding-right: 8px"></iron-icon>Person hinzufügen
+                                </paper-button>
+                            </div>
 
-                <anw-single sound-enabled="{{soundEnabled}}" key="fabian">
-                </anw-single>
+                        </div>
+                    </div>
+                </template>
 
-                <anw-single sound-enabled="{{soundEnabled}}" key="michael-keil">
-                </anw-single>
             </div>
         </div>
-            
-        <entertainment-fab></entertainment-fab>
+
+        <paper-fab on-tap="addEntry" icon="add"></paper-fab>
+        <!-- <entertainment-fab></entertainment-fab> -->
 
     </template>
 
@@ -75,8 +109,28 @@
             }
 
             static get properties() {
-                return {};
+                return {
+                    personen: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    }
+                };
             }
+
+            addEntry(event) {
+                var personID = prompt("Bitte geben Sie die ID der Person ein, die sie hinzufügen wollen.");
+                if (personID !== null && typeof personID !== "undefined" && personID !== "") {
+                    this.push('personen', personID);
+                }
+            }
+
+            _onDeleteEntry(event) {
+                const personKey = event.detail.key;
+                const personIndex = this.personen.indexOf(personKey);
+                this.splice('personen', personIndex, personIndex + 1);
+            }
+
         }
 
         window.customElements.define(AnwesenheitApp.is, AnwesenheitApp);
