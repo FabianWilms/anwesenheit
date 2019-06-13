@@ -129,8 +129,6 @@
                     let toBeAdded = params.getAll('track');
 
                     toBeAdded.forEach(element => {
-                        console.warn(element);
-                        console.warn(JSON.stringify(this.personen));
                         if (!this.personen.includes(element)) {
                             this.push('personen', element);
                         }
