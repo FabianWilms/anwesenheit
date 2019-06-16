@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 
 <link rel="import" href="../../styles/anw-style.html">
 <link rel="import" href="../notify-button/notify-button.html">
@@ -21,11 +22,54 @@
         padding: 8px;
       }
 
+      #remove-button {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.4s ease-in-out;
+      }
+
+      #avatar-or-emoji {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        visibility: visible;
+        opacity: 1;
+        transition: all 0.4s ease-in-out;
+      }
+
+      paper-card:hover #remove-button {
+        transform: rotate(360deg);
+        visibility: visible;
+        opacity: 1;
+      }
+
+      paper-card:hover #avatar-or-emoji {
+        transform: rotate(360deg);
+        visibility: hidden;
+        opacity: 0;
+      }
+
       paper-card {
         width: 320px;
         -webkit-transition: background-color 1000ms ease;
         -ms-transition: background-color 1000ms ease;
         transition: background-color 1000ms ease;
+      }
+
+      .min-height {
+        height: 340px;
+        width: 100%;
+      }
+
+      div.error {
+        width: 100%;
+      }
+
+      paper-button>iron-icon {
+        padding-right: 8px;
       }
 
       .message {
@@ -39,6 +83,7 @@
 
       .message.main {
         font-size: 32px;
+        hyphens: auto;
       }
 
       .message.until {
@@ -127,62 +172,176 @@
       iron-collapse {
         --iron-collapse-transition-duration: 500ms;
       }
+
+      @keyframes play180 {
+        0% {
+          background-position: 0px 0px;
+        }
+
+        100% {
+          background-position: -4320px 0px;
+        }
+      }
+
+      .loading {
+        position: absolute;
+        /*it can be fixed too*/
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+
+        margin: auto;
+        width: 24px;
+        height: 24px;
+        max-width: 100%;
+        max-height: 100%;
+
+        background-image: url(../../images/svg/anw_loading.svg);
+        animation-duration: 3000ms;
+        animation-timing-function: steps(180);
+        background-repeat: no-repeat;
+        animation-name: play180;
+        animation-iteration-count: infinite;
+
+        transform: scale(15);
+      }
+
+      paper-card[error] {
+        background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+        background-size: 1800% 1800%;
+
+        -webkit-animation: rainbow 18s ease infinite;
+        -z-animation: rainbow 18s ease infinite;
+        -o-animation: rainbow 18s ease infinite;
+        animation: rainbow 18s ease infinite;
+      }
+
+      @-webkit-keyframes rainbow {
+        0% {
+          background-position: 0% 82%
+        }
+
+        50% {
+          background-position: 100% 19%
+        }
+
+        100% {
+          background-position: 0% 82%
+        }
+      }
+
+      @-moz-keyframes rainbow {
+        0% {
+          background-position: 0% 82%
+        }
+
+        50% {
+          background-position: 100% 19%
+        }
+
+        100% {
+          background-position: 0% 82%
+        }
+      }
+
+      @-o-keyframes rainbow {
+        0% {
+          background-position: 0% 82%
+        }
+
+        50% {
+          background-position: 100% 19%
+        }
+
+        100% {
+          background-position: 0% 82%
+        }
+      }
+
+      @keyframes rainbow {
+        0% {
+          background-position: 0% 82%
+        }
+
+        50% {
+          background-position: 100% 19%
+        }
+
+        100% {
+          background-position: 0% 82%
+        }
+      }
     </style>
 
     <style include="anw-style"></style>
 
     <style include="iron-flex iron-flex-alignment"></style>
 
+    <firebase-document path="anwesenheiten/{{key}}" data="{{person}}">
+    </firebase-document>
+
     <app-localstorage-document key="showTimes[[person.key]]" data="{{showTimes}}">
     </app-localstorage-document>
 
-    <paper-card class="anw-state background" state$="[[person.status]]">
+    <paper-card class="anw-state background" state$="[[person.status]]" error$={{error}}>
+      <template is="dom-if" if="{{person.status}}">
+        <div id="contentdiv">
 
-      <div id="contentdiv">
-
-        <div class="layout horizontal center card-header">
-          <span class="title flex">[[person.name]]</span>
-          <template is="dom-if" if="{{!person.emoji}}">
-            <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]" class="img-circle"></iron-image>
-          </template>
-          <template is="dom-if" if="{{person.emoji}}">
-            <div class="img-circle">{{person.emoji}}</div>
-          </template>
-        </div>
-
-        <div class="card-content">
-          <div class="message">
-            <span class="message main">
-              [[person.message]]
-            </span>
-            <template is="dom-if" if="[[person.until]]">
-              <br>
-              <span class="message until">(bis einschl. [[person.until]])</span>
-            </template>
+          <div class="layout horizontal center card-header">
+            <span class="title flex">[[person.name]]</span>
+            <div id="avatar-or-emoji">
+              <template is="dom-if" if="{{!person.emoji}}">
+                <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]"
+                  class="img-circle">
+                </iron-image>
+              </template>
+              <template is="dom-if" if="{{person.emoji}}">
+                <div class="img-circle">{{person.emoji}}</div>
+              </template>
+            </div>
+            <div id="remove-button" class="layout vertical center-justified" style="width: 45px; height: 45px;">
+              <paper-icon-button class="self-center" icon="delete" style="padding: 0px; width: 28px; height: 28px;"
+                on-tap="removePersonDialog"></paper-icon-button>
+            </div>
           </div>
 
-          <hr>
+          <div class="card-content">
+            <div class="message">
+              <span class="message main">
+                [[person.message]]
+              </span>
+              <template is="dom-if" if="[[person.until]]">
+                <br>
+                <span class="message until">(bis einschl. [[person.until]])</span>
+              </template>
+            </div>
 
-          <div style="position: relative;">
-            <div class="layout horizontal center-justified actions">
-              <notify-button class="action" person="[[person]]"></notify-button>
-              <subscribe-button class="action" person=[[person]]></subscribe-button>
-              <div class="layout vertical self-center action">
-                <paper-icon-button class="self-center" on-tap="_changeState" expand$="[[showTimes]]" icon="expand-more"></paper-icon-button>
-                <small class="self-center">Zeiten</small>
+            <hr>
+
+            <div style="position: relative;">
+              <div class="layout horizontal center-justified actions">
+                <notify-button class="action" person="[[person]]"></notify-button>
+                <subscribe-button class="action" person=[[person]]></subscribe-button>
+                <div class="layout vertical self-center action">
+                  <paper-icon-button class="self-center" on-tap="_changeState" expand$="[[showTimes]]"
+                    icon="expand-more">
+                  </paper-icon-button>
+                  <small class="self-center">Zeiten</small>
+                </div>
               </div>
+              <hr class="scaling" opened$="{{showTimes}}">
             </div>
-            <hr class="scaling" opened$="{{showTimes}}">
+
+            <iron-collapse opened="{{showTimes}}">
+              <div class="collapse-content">
+                <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
+              </div>
+            </iron-collapse>
+
           </div>
-
-          <iron-collapse opened="{{showTimes}}">
-            <div class="collapse-content">
-              <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
-            </div>
-          </iron-collapse>
-
         </div>
-      </div>
+      </template>
 
       <div id="gifdiv" class="layout horizontal center changing" style="display: none">
         <video width="90%" autoplay>
@@ -190,7 +349,41 @@
         </video>
       </div>
 
+      <template is="dom-if" if="{{error}}">
+        <div class="error layout vertical self-center">
+          <div class="layout horizontal center card-header">
+            <span class="error title flex">Fehler</span>
+            <iron-icon icon="error"></iron-icon>
+          </div>
+          <div class="card-content">
+            <div class="message">
+              <span class="message main">
+                [[error]]
+              </span>
+            </div>
+          </div>
+          <paper-button on-tap="removePersonDialog" style="margin-bottom: 16px; background: white;" raised
+            class="self-center error">
+            <iron-icon icon="delete"></iron-icon>Person entfernen
+          </paper-button>
+        </div>
+      </template>
+
+      <template is="dom-if" if="{{_isLoadingVisible(person, error)}}">
+        <div class="min-height">
+          <div class="loading"></div>
+        </div>
+      </template>
+
     </paper-card>
+
+    <paper-dialog id="removepersondialog" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+      <h1>Person entfernen?</h1>
+      <p>Möchten sie {{person.name}} wirklich entfernen?</p>
+      <paper-button dialog-dismiss>Abbrechen</paper-button>
+      <paper-button dialog-confirm on-tap="removePerson">Entfernen</paper-button>
+    </paper-dialog>
+
   </template>
 
   <script>
@@ -222,6 +415,16 @@
           },
 
           /**
+           * Key to the person this anw-single card represents.
+          **/
+          key: String,
+
+          /**
+           * If an error occurs this String will contain an error message to display to the user.
+          **/
+          error: String,
+
+          /**
            * Enables or disables the playing of sounds when a persons state changes.
           **/
           soundEnabled: {
@@ -237,7 +440,8 @@
         };
       }
 
-      connectedCallback() {
+      ready() {
+        super.ready();
         var contentDiv = this.shadowRoot.querySelector('#contentdiv');
         var gifDiv = this.shadowRoot.querySelector('#gifdiv');
         var vid = this.shadowRoot.querySelector('video');
@@ -248,14 +452,47 @@
         });
       }
 
+      removePersonDialog(event) {
+        this.$.removepersondialog.open()
+      }
+
+      removePerson(event) {
+          this.dispatchEvent(new CustomEvent('delete', { detail: { key: this.key } }));
+      }
+
+      _isLoadingVisible(person, error) {
+        if (!error) {
+          if (Object.entries(this.person).length !== 0) {
+            return false;
+          }
+        } else {
+          return false;
+        }
+        return true;
+      }
+
       _changeState(e) {
         this.set('showTimes', !this.showTimes);
         gtag('event', `show sprechzeiten`, { 'event_category': 'settings', 'value': this.showTimes });
       }
 
       _personChanged(newPerson, oldPerson) {
-        if (typeof newPerson !== "undefined" && typeof oldPerson !== "undefined") {
-          if (newPerson.status !== oldPerson.status) {
+
+        // After 5 seconds check if data is available. If not show error.
+        setTimeout(() => {
+          if (Object.entries(this.person).length === 0 && this.person.constructor === Object) {
+            // We don't have data!
+            this.set('error', `Ein Nutzer mit der ID "${this.key}" existiert nicht.`);
+          } else {
+            this.set('error', undefined);
+          }
+        }, 5000);
+
+        if (typeof newPerson !== "undefined" &&
+          typeof oldPerson !== "undefined" &&
+          Object.entries(newPerson).length > 0 &&
+          Object.entries(oldPerson).length > 0) {
+          if (newPerson.status !== oldPerson.status && typeof oldPerson.status !== "undefined") {
 
             this._showAsyncGif(parseInt(newPerson.status));
 
@@ -295,17 +532,21 @@
         fetch(gUrl)
           .then(result => {
             result.json().then(data => {
-              let contentDiv = this.shadowRoot.querySelector('#contentdiv');
-              let gifDiv = this.shadowRoot.querySelector('#gifdiv');
-              let video = this.shadowRoot.querySelector('video');
-              let height = this.shadowRoot.querySelector('paper-card').offsetHeight;
-              let source = this.shadowRoot.querySelector('#gifsrc');
+              if (data.hasOwnProperty("data") && data.data.hasOwnProperty("images") && data.data.images.hasOwnProperty("original_mp4")) {
+                let contentDiv = this.shadowRoot.querySelector('#contentdiv');
+                let gifDiv = this.shadowRoot.querySelector('#gifdiv');
+                let video = this.shadowRoot.querySelector('video');
+                let height = this.shadowRoot.querySelector('paper-card').offsetHeight;
+                let source = this.shadowRoot.querySelector('#gifsrc');
 
-              contentDiv.style.display = "none";
-              gifDiv.setAttribute("style", `display:"inline-block"; height:${height}px;`);
-              source.setAttribute('src', data.data.images.original_mp4.mp4);
-              video.load();
-              video.play();
+                contentDiv.style.display = "none";
+                gifDiv.setAttribute("style", `display:"inline-block"; height:${height}px;`);
+                source.setAttribute('src', data.data.images.original_mp4.mp4);
+                video.load();
+                video.play();
+              } else {
+                console.warn("Data didn't have the expected keys: ", data);
+              }
             })
           })
           .catch(error => { console.log(error) });

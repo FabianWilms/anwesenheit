@@ -1,15 +1,20 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-styles/default-theme.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 
 
 <link rel="import" href="../../styles/app-theme.html">
 <link rel="import" href="../anw-single/anw-single.html">
-<link rel="import" href="../entertainment/entertainment-fab.html">
+<link rel="import" href="../entertainment/entertainment-button.html">
 <link rel="import" href="../toggle-sound-button/toggle-sound-button.html">
 
 
@@ -25,78 +30,85 @@
                 padding: 0px 16px;
             }
 
-            .legend paper-card {
-                margin: 8px;
-            }
-
-            @keyframes play180 {
-                0% {
-                    background-position: 0px 0px;
-                }
-                100% {
-                    background-position: -4320px 0px;
-                }
-            }
-
-            .loading {
+            .floating {
+                display: inline;
                 position: absolute;
-                /*it can be fixed too*/
-                left: 0;
-                right: 0;
                 top: 0;
                 bottom: 0;
-
+                left: 0;
+                right: 0;
                 margin: auto;
-                width: 24px;
-                height: 24px;
-                max-width: 100%;
-                max-height: 100%;
+            }
 
-                background-image: url(../../images/svg/anw_loading.svg);
-                animation-duration: 3000ms;
-                animation-timing-function: steps(180);
-                background-repeat: no-repeat;
-                animation-name: play180;
-                animation-iteration-count: infinite;
-
-                transform: scale(15);
+            paper-fab {
+                --paper-fab-background: black;
+                --paper-fab-keyboard-focus-background: grey;
+                position: fixed;
+                right: 25px;
+                bottom: 30px;
             }
         </style>
 
         <style include="iron-flex iron-flex-alignment"></style>
 
-        <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com" database-url="https://anwesenheit-550a6.firebaseio.com" api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
-            project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com" messaging-sender-id="44085346030">
+        <firebase-app auth-domain="anwesenheit-550a6.firebaseapp.com"
+            database-url="https://anwesenheit-550a6.firebaseio.com" api-key="AIzaSyCMOpqIHJ0QG5LddQ-DzCQ7bG6RJaZsKHQ"
+            project-id="anwesenheit-550a6" storage-bucket="anwesenheit-550a6.appspot.com"
+            messaging-sender-id="44085346030">
         </firebase-app>
 
-        <firebase-document path="anwesenheiten" data="{{anwesenheiten}}">
-        </firebase-document>
+        <app-localstorage-document key="personen" data="{{personen}}">
+        </app-localstorage-document>
 
         <div class="layout horizontal header">
-            <h1 class="flex">Anwesenheit in D.04.23</h1>
-            <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
-        </div>
-        <template is="dom-if" if="[[anwesenheiten.sebastian]]">
-            <div>
-                <div class="layout horizontal wrap center-justified">
-
-                    <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.sebastian}}>
-                    </anw-single>
-
-                    <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.michael}}>
-                    </anw-single>
-
-                    <anw-single sound-enabled="{{soundEnabled}}" person={{anwesenheiten.fabian}}>
-                    </anw-single>
-
-                </div>
+            <h1 class="flex">Anwesenheit</h1>
+            <div class="layout horizontal self-center">
+                <toggle-sound-button  sound-enabled="{{soundEnabled}}"></toggle-sound-button>
+                <paper-icon-button  icon="social:share" on-tap="share"></paper-icon-button>
+                <entertainment-button></entertainment-button>
             </div>
-        </template>
-        <entertainment-fab></entertainment-fab>
+        </div>
 
-        <template is="dom-if" if="[[!anwesenheiten.sebastian]]">
-            <div class="loading"></div>
-        </template>
+        <div>
+            <div class="layout horizontal wrap center-justified">
+
+                <template is="dom-if" if="[[personen]]">
+                    <template is="dom-repeat" items="[[personen]]">
+                        <anw-single on-delete="_onDeleteEntry" sound-enabled="{{soundEnabled}}" key="{{item}}">
+                        </anw-single>
+                    </template>
+                </template>
+
+                <template is="dom-if" if="[[!personen.length]]">
+                    <div class="floating layout horizontal center-justified" style="height: 100%">
+                        <svg class="self-center" style="width:128px;height:128px; padding: 16px;" viewBox="0 0 24 24">
+                            <path fill="#000000"
+                                d="M15,3H12V5H15V21H5V5H8V3H5A2,2 0 0,0 3,5V21A2,2 0 0,0 5,23H15A2,2 0 0,0 17,21V5A2,2 0 0,0 15,3M10,7A2,2 0 0,1 12,9A2,2 0 0,1 10,11A2,2 0 0,1 8,9A2,2 0 0,1 10,7M14,15H6V14C6,12.67 8.67,12 10,12C11.33,12 14,12.67 14,14V15M14,18H6V17H14V18M10,20H6V19H10V20M11,5H9V1H11V5M19,12V7H21V12H19M19,16V14H21V16H19Z" />
+                        </svg>
+                        <div class="layout vertical self-center">
+                            <span style="font-size: 32px; padding-bottom: 16px;">Sie verfolgen noch keine
+                                Personen</span>
+                            <div class="layout vertical">
+                                <paper-button class="self-center" on-tap="openNewPersonDialog" raised>
+                                    <iron-icon icon="add" style="padding-right: 8px"></iron-icon>Person hinzufügen
+                                </paper-button>
+                            </div>
+
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+        </div>
+
+        <paper-fab on-tap="openNewPersonDialog" icon="add"></paper-fab>
+
+        <paper-dialog id="addperson" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+            <h1>Person hinzuf&uuml;gen?</h1>
+            <paper-input autofocus always-float-label type="text" label="ID der Person" value="{{personID}}"></paper-input>
+            <paper-button dialog-dismiss>Abbrechen</paper-button>
+            <paper-button dialog-confirm on-tap="addEntry">Hinzuf&uuml;gen</paper-button>
+        </paper-dialog>
 
     </template>
 
@@ -112,9 +124,67 @@
 
             static get properties() {
                 return {
-                    anwesenheiten: Object
+                    personen: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
+                    personID: {
+                        type: String,
+                        value: null
+                    }
                 };
             }
+
+            ready() {
+                super.ready();
+
+                setTimeout(() => {
+                    let params = (new URL(document.location)).searchParams;
+                    let toBeAdded = params.getAll('track');
+
+                    toBeAdded.forEach(element => {
+                        if (!this.personen.includes(element)) {
+                            this.push('personen', element);
+                        }
+                    })
+                }, 300);
+            }
+
+            share(e) {
+                var newurl = new URL(document.location.href.split("?")[0]);
+
+                this.personen.forEach(element => {
+                    newurl.searchParams.append("track", element);
+                })
+
+                if (navigator.share !== undefined) {
+                    navigator.share({
+                        url: newurl.href
+                    });
+                } else {
+                    alert("Teile deine Konfiguration mit anderen:\n\n" + newurl.href);
+                }
+            }
+
+            openNewPersonDialog(event) {
+                this.$.addperson.open();
+            }
+
+            addEntry(event) {
+               // var personID = prompt("Bitte geben Sie die ID der Person ein, die sie hinzufügen wollen.");
+                if (this.personID !== null && typeof this.personID !== "undefined" && this.personID !== "") {
+                    this.push('personen', this.personID);
+                    this.personID = undefined;
+                }
+            }
+
+            _onDeleteEntry(event) {
+                const personKey = event.detail.key;
+                const personIndex = this.personen.indexOf(personKey);
+                this.splice('personen', personIndex, personIndex + 1);
+            }
+
         }
 
         window.customElements.define(AnwesenheitApp.is, AnwesenheitApp);
