@@ -4,6 +4,8 @@
 <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
@@ -84,7 +86,7 @@
                             <span style="font-size: 32px; padding-bottom: 16px;">Sie verfolgen noch keine
                                 Personen</span>
                             <div class="layout vertical">
-                                <paper-button class="self-center" on-tap="addEntry" raised>
+                                <paper-button class="self-center" on-tap="openNewPersonDialog" raised>
                                     <iron-icon icon="add" style="padding-right: 8px"></iron-icon>Person hinzufügen
                                 </paper-button>
                             </div>
@@ -96,8 +98,15 @@
             </div>
         </div>
 
-        <paper-fab on-tap="addEntry" icon="add"></paper-fab>
+        <paper-fab on-tap="openNewPersonDialog" icon="add"></paper-fab>
         <!-- <entertainment-fab></entertainment-fab> -->
+
+        <paper-dialog id="addperson" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+            <h1>Person hinzuf&uuml;gen?</h1>
+            <paper-input autofocus always-float-label type="text" label="ID der Person" value="{{personID}}"></paper-input>
+            <paper-button dialog-dismiss>Abbrechen</paper-button>
+            <paper-button dialog-confirm on-tap="addEntry">Hinzuf&uuml;gen</paper-button>
+        </paper-dialog>
 
     </template>
 
@@ -117,6 +126,10 @@
                         type: Array,
                         value: [],
                         notify: true
+                    },
+                    personID: {
+                        type: String,
+                        value: null
                     }
                 };
             }
@@ -152,10 +165,15 @@
                 }
             }
 
+            openNewPersonDialog(event) {
+                this.$.addperson.open();
+            }
+
             addEntry(event) {
-                var personID = prompt("Bitte geben Sie die ID der Person ein, die sie hinzufügen wollen.");
-                if (personID !== null && typeof personID !== "undefined" && personID !== "") {
-                    this.push('personen', personID);
+               // var personID = prompt("Bitte geben Sie die ID der Person ein, die sie hinzufügen wollen.");
+                if (this.personID !== null && typeof this.personID !== "undefined" && this.personID !== "") {
+                    this.push('personen', this.personID);
+                    this.personID = undefined;
                 }
             }
 
