@@ -44,7 +44,9 @@
             }
 
             iron-collapse {
-
+                height: 0;
+                width: 0;
+                overflow: visible;
             }
         </style>
 
@@ -114,10 +116,11 @@
 
             this.shadowRoot.querySelectorAll('.minifab').forEach((minifab, index, array) => {
                 minifab.animate([
-                    {transform: 'scale(.2)'},
+                    {transform: 'scale(0)'},
                     {transform: 'scale(1)'}
                 ], {
-                    duration: Math.log(array.length - index) * 100 + 300,
+                    duration: index * 100 + 300,
+                    easing: 'ease-in-out'
                 });
             })
 
