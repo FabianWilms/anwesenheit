@@ -14,7 +14,7 @@
 
 <link rel="import" href="../../styles/app-theme.html">
 <link rel="import" href="../anw-single/anw-single.html">
-<link rel="import" href="../entertainment/entertainment-fab.html">
+<link rel="import" href="../entertainment/entertainment-button.html">
 <link rel="import" href="../toggle-sound-button/toggle-sound-button.html">
 
 
@@ -62,8 +62,11 @@
 
         <div class="layout horizontal header">
             <h1 class="flex">Anwesenheit</h1>
-            <toggle-sound-button class="self-center" sound-enabled="{{soundEnabled}}"></toggle-sound-button>
-            <paper-icon-button class="self-center" icon="social:share" on-tap="share"></paper-icon-button>
+            <div class="layout horizontal self-center">
+                <toggle-sound-button  sound-enabled="{{soundEnabled}}"></toggle-sound-button>
+                <paper-icon-button  icon="social:share" on-tap="share"></paper-icon-button>
+                <entertainment-button></entertainment-button>
+            </div>
         </div>
 
         <div>
@@ -99,7 +102,6 @@
         </div>
 
         <paper-fab on-tap="openNewPersonDialog" icon="add"></paper-fab>
-        <!-- <entertainment-fab></entertainment-fab> -->
 
         <paper-dialog id="addperson" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
             <h1>Person hinzuf&uuml;gen?</h1>

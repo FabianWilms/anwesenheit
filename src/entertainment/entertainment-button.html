@@ -7,6 +7,7 @@
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -15,15 +16,9 @@
 <link rel="import" href="daily-xkcd.html">
 
 
-<dom-module id="entertainment-fab">
+<dom-module id="entertainment-button">
     <template>
         <style>
-            #fab {
-                position: fixed;
-                right: 25px;
-                bottom: 30px;
-            }
-
             .minifab {
                 margin: 8px auto;
             }
@@ -47,6 +42,10 @@
                 padding: 0;
                 --paper-progress-active-color: black;
             }
+
+            iron-collapse {
+
+            }
         </style>
 
         <paper-dialog id="dilbert" with-backdrop entry-animation="slide-from-left-animation" exit-animation="slide-right-animation">
@@ -62,6 +61,7 @@
         </paper-dialog>
 
         <div id="fab">
+            <paper-icon-button id="fabbutton" on-tap="toggleFab" icon="star"></paper-icon-button>
             <iron-collapse id="collapse" opened="{{fabopened}}" class="layout vertical">
                 <div class="layout horizontal center-justified">
                     <paper-fab mini
@@ -76,7 +76,6 @@
                         class="minifab"></paper-fab>
                 </div>
             </iron-collapse>
-            <paper-fab id="fabbutton" on-tap="toggleFab" icon="star"></paper-fab>
         </div>
 
     </template>
@@ -86,9 +85,9 @@
      * @customElement
      * @polymer
      */
-    class EntertainmentFab extends Polymer.Element {
+    class EntertainmentButton extends Polymer.Element {
         static get is() {
-            return 'entertainment-fab';
+            return 'entertainment-button';
         }
 
         static get properties() {
@@ -163,5 +162,5 @@
         }
     }
 
-    window.customElements.define(EntertainmentFab.is, EntertainmentFab);
+    window.customElements.define(EntertainmentButton.is, EntertainmentButton);
 </script>
