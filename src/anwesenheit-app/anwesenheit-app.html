@@ -72,6 +72,7 @@
         <div class="layout horizontal header">
             <h1 class="flex">Anwesenheit</h1>
             <div class="layout horizontal self-center">
+                <paper-icon-button  icon="icons:autorenew" on-tap="openChangeRoomDialog"></paper-icon-button>
                 <toggle-sound-button  sound-enabled="{{soundEnabled}}"></toggle-sound-button>
                 <paper-icon-button  icon="social:share" on-tap="share"></paper-icon-button>
                 <entertainment-button></entertainment-button>
@@ -105,7 +106,7 @@
                                     <span class="headline">Oder direkt zu einem Raum</span>
                                     <div class="self-center">
                                         <template is="dom-repeat" items="[[defaultrooms]]">
-                                            <paper-button class="self-center" on-tap="onSelectRoom" data-item$="[[item]]" raised>{{item.name}}</paper-button>
+                                            <paper-button class="self-center" on-tap="onSelectRoom" indexed$="[[index]]" raised>{{item.name}}</paper-button>
                                         </template>
                                     </div>
                                 </template>
@@ -125,6 +126,18 @@
             <paper-input autofocus always-float-label type="text" label="ID der Person" value="{{personID}}"></paper-input>
             <paper-button dialog-dismiss>Abbrechen</paper-button>
             <paper-button dialog-confirm on-tap="addEntry">Hinzuf&uuml;gen</paper-button>
+        </paper-dialog>
+
+        <paper-dialog id="setroom" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+            <h1>Raum wechseln?</h1>
+            <template is="dom-if" if="[[defaultrooms.length > 0]]">
+                <div class="self-center">
+                    <template is="dom-repeat" items="[[defaultrooms]]">
+                        <paper-button dialog-dismiss class="self-center" on-tap="onSelectRoom" indexed$="[[index]]" raised>{{item.name}}</paper-button>
+                    </template>
+                </div>
+            </template>
+            <paper-button dialog-dismiss>Abbrechen</paper-button>
         </paper-dialog>
 
     </template>
@@ -171,7 +184,9 @@
             }
 
             onSelectRoom(event) {
-                this.configure(JSON.parse(event.target.dataset.item).persons, true)
+                let selected = this.defaultrooms[event.target.getAttribute('indexed')];
+                if(selected && selected.persons)
+                    this.configure(selected.persons, true)
             }
 
             configure(toBeAdded, clear) {
@@ -204,6 +219,10 @@
 
             openNewPersonDialog(event) {
                 this.$.addperson.open();
+            }
+
+            openChangeRoomDialog(event) {
+                this.$.setroom.open();
             }
 
             addEntry(event) {
