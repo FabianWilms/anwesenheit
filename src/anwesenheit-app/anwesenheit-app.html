@@ -233,12 +233,6 @@
                 }
             }
 
-            navigate(url) {
-                console.log('navigate to:')
-                console.log(url)
-                window.location.href = url
-            }
-
             _onDeleteEntry(event) {
                 const personKey = event.detail.key;
                 const personIndex = this.personen.indexOf(personKey);
