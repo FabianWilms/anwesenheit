@@ -5,6 +5,8 @@
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 
@@ -25,7 +27,7 @@
       #remove-button {
         position: absolute;
         right: 14px;
-        top: 14px;
+        top: 8px;
         visibility: hidden;
         opacity: 0;
         transition: all 0.4s ease-in-out;
@@ -34,7 +36,7 @@
       #avatar-or-emoji {
         position: absolute;
         right: 14px;
-        top: 14px;
+        top: 8px;
         visibility: visible;
         opacity: 1;
         transition: all 0.4s ease-in-out;
@@ -92,7 +94,7 @@
       }
 
       .card-header {
-        padding: 12px 16px 8px 16px;
+        padding: 12px 16px 0px 16px;
         text-align: center;
       }
 
@@ -102,8 +104,18 @@
         font-weight: bold;
       }
 
+      .location {
+        padding-left: 12px;
+        font-size: 12px;
+      }
+
+      .location iron-icon {
+        height: 16px;
+        width: 16px;
+      }
+
       .card-content {
-        padding: 8px 16px 8px 16px;
+        padding: 0px 16px 8px 16px;
       }
 
       .actions {
@@ -303,8 +315,16 @@
             <div id="remove-button" class="layout vertical center-justified" style="width: 45px; height: 45px;">
               <paper-icon-button class="self-center" icon="delete" style="padding: 0px; width: 28px; height: 28px;"
                 on-tap="removePersonDialog"></paper-icon-button>
+              <paper-tooltip>Person entfernen</paper-tooltip>
             </div>
           </div>
+
+          <template is="dom-if" if="[[person.location]]">
+            <div class="layout horizontal location">
+              <iron-icon class="self-center" icon="communication:location-on"></iron-icon>
+              <span class="self-center">[[person.location]]</span>
+            </div>
+          </template>
 
           <div class="card-content">
             <div class="message">
@@ -377,7 +397,8 @@
 
     </paper-card>
 
-    <paper-dialog id="removepersondialog" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+    <paper-dialog id="removepersondialog" with-backdrop entry-animation="scale-up-animation"
+      exit-animation="scale-down-animation">
       <h1>Person entfernen?</h1>
       <p>Möchten sie {{person.name}} wirklich entfernen?</p>
       <paper-button dialog-dismiss>Abbrechen</paper-button>
@@ -457,7 +478,7 @@
       }
 
       removePerson(event) {
-          this.dispatchEvent(new CustomEvent('delete', { detail: { key: this.key } }));
+        this.dispatchEvent(new CustomEvent('delete', { detail: { key: this.key } }));
       }
 
       _isLoadingVisible(person, error) {
