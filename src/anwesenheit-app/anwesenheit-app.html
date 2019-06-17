@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 
@@ -28,6 +29,11 @@
             .header {
                 color: var(--primary-text-color);
                 padding: 0px 16px;
+            }
+
+            .headline {
+                font-size: 32px;
+                padding: 16px;
             }
 
             .floating {
@@ -57,12 +63,16 @@
             messaging-sender-id="44085346030">
         </firebase-app>
 
+        <firebase-document path="defaultrooms" data="{{defaultrooms}}">
+        </firebase-document>
+
         <app-localstorage-document key="personen" data="{{personen}}">
         </app-localstorage-document>
 
         <div class="layout horizontal header">
             <h1 class="flex">Anwesenheit</h1>
             <div class="layout horizontal self-center">
+                <paper-icon-button  icon="icons:autorenew" on-tap="openChangeRoomDialog"></paper-icon-button>
                 <toggle-sound-button  sound-enabled="{{soundEnabled}}"></toggle-sound-button>
                 <paper-icon-button  icon="social:share" on-tap="share"></paper-icon-button>
                 <entertainment-button></entertainment-button>
@@ -86,12 +96,20 @@
                                 d="M15,3H12V5H15V21H5V5H8V3H5A2,2 0 0,0 3,5V21A2,2 0 0,0 5,23H15A2,2 0 0,0 17,21V5A2,2 0 0,0 15,3M10,7A2,2 0 0,1 12,9A2,2 0 0,1 10,11A2,2 0 0,1 8,9A2,2 0 0,1 10,7M14,15H6V14C6,12.67 8.67,12 10,12C11.33,12 14,12.67 14,14V15M14,18H6V17H14V18M10,20H6V19H10V20M11,5H9V1H11V5M19,12V7H21V12H19M19,16V14H21V16H19Z" />
                         </svg>
                         <div class="layout vertical self-center">
-                            <span style="font-size: 32px; padding-bottom: 16px;">Sie verfolgen noch keine
+                            <span class="headline">Sie verfolgen noch keine
                                 Personen</span>
                             <div class="layout vertical">
                                 <paper-button class="self-center" on-tap="openNewPersonDialog" raised>
                                     <iron-icon icon="add" style="padding-right: 8px"></iron-icon>Person hinzufügen
                                 </paper-button>
+                                <template is="dom-if" if="[[defaultrooms.length > 0]]">
+                                    <span class="headline">Oder direkt zu einem Raum</span>
+                                    <div class="self-center">
+                                        <template is="dom-repeat" items="[[defaultrooms]]">
+                                            <paper-button class="self-center" on-tap="onSelectRoom" indexed$="[[index]]" raised>{{item.name}}</paper-button>
+                                        </template>
+                                    </div>
+                                </template>
                             </div>
 
                         </div>
@@ -108,6 +126,18 @@
             <paper-input autofocus always-float-label type="text" label="ID der Person" value="{{personID}}"></paper-input>
             <paper-button dialog-dismiss>Abbrechen</paper-button>
             <paper-button dialog-confirm on-tap="addEntry">Hinzuf&uuml;gen</paper-button>
+        </paper-dialog>
+
+        <paper-dialog id="setroom" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+            <h1>Raum wechseln?</h1>
+            <template is="dom-if" if="[[defaultrooms.length > 0]]">
+                <div class="self-center">
+                    <template is="dom-repeat" items="[[defaultrooms]]">
+                        <paper-button dialog-dismiss class="self-center" on-tap="onSelectRoom" indexed$="[[index]]" raised>{{item.name}}</paper-button>
+                    </template>
+                </div>
+            </template>
+            <paper-button dialog-dismiss>Abbrechen</paper-button>
         </paper-dialog>
 
     </template>
@@ -132,7 +162,12 @@
                     personID: {
                         type: String,
                         value: null
-                    }
+                    },
+                    defaultrooms: {
+                        type: Array,
+                        value: [],
+                        notify: true
+                    },
                 };
             }
 
@@ -142,13 +177,28 @@
                 setTimeout(() => {
                     let params = (new URL(document.location)).searchParams;
                     let toBeAdded = params.getAll('track');
+                    let clear = params.has('clear');
 
-                    toBeAdded.forEach(element => {
-                        if (!this.personen.includes(element)) {
-                            this.push('personen', element);
-                        }
-                    })
+                    this.configure(toBeAdded, clear)
                 }, 300);
+            }
+
+            onSelectRoom(event) {
+                let selected = this.defaultrooms[event.target.getAttribute('indexed')];
+                if(selected && selected.persons)
+                    this.configure(selected.persons, true)
+            }
+
+            configure(toBeAdded, clear) {
+                if(clear) {
+                    this.set('personen', [])
+                }
+
+                toBeAdded.forEach(element => {
+                    if (!this.personen.includes(element)) {
+                        this.push('personen', element);
+                    }
+                })
             }
 
             share(e) {
@@ -169,6 +219,10 @@
 
             openNewPersonDialog(event) {
                 this.$.addperson.open();
+            }
+
+            openChangeRoomDialog(event) {
+                this.$.setroom.open();
             }
 
             addEntry(event) {
