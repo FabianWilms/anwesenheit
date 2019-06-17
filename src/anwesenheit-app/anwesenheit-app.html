@@ -11,6 +11,7 @@
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 
 
 <link rel="import" href="../../styles/app-theme.html">
@@ -72,10 +73,15 @@
         <div class="layout horizontal header">
             <h1 class="flex">Anwesenheit</h1>
             <div class="layout horizontal self-center">
-                <paper-icon-button  icon="icons:autorenew" on-tap="openChangeRoomDialog"></paper-icon-button>
-                <toggle-sound-button  sound-enabled="{{soundEnabled}}"></toggle-sound-button>
-                <paper-icon-button  icon="social:share" on-tap="share"></paper-icon-button>
-                <entertainment-button></entertainment-button>
+                <paper-icon-button id="changeroom" icon="icons:autorenew" on-tap="openChangeRoomDialog">
+                </paper-icon-button>
+                <toggle-sound-button sound-enabled="{{soundEnabled}}"></toggle-sound-button>
+                <paper-icon-button id="share" icon="social:share" on-tap="share"></paper-icon-button>
+                <entertainment-button id="entertainer"></entertainment-button>
+
+                <paper-tooltip for="changeroom">Raum wechseln</paper-tooltip>
+                <paper-tooltip for="share">Konfiguration teilen</paper-tooltip>
+                <paper-tooltip for="entertainer">Entertain me!</paper-tooltip>
             </div>
         </div>
 
@@ -106,7 +112,8 @@
                                     <span class="headline">Oder direkt zu einem Raum</span>
                                     <div class="self-center">
                                         <template is="dom-repeat" items="[[defaultrooms]]">
-                                            <paper-button class="self-center" on-tap="onSelectRoom" indexed$="[[index]]" raised>{{item.name}}</paper-button>
+                                            <paper-button class="self-center" on-tap="onSelectRoom" indexed$="[[index]]"
+                                                raised>{{item.name}}</paper-button>
                                         </template>
                                     </div>
                                 </template>
@@ -121,19 +128,23 @@
 
         <paper-fab on-tap="openNewPersonDialog" icon="add"></paper-fab>
 
-        <paper-dialog id="addperson" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+        <paper-dialog id="addperson" with-backdrop entry-animation="scale-up-animation"
+            exit-animation="scale-down-animation">
             <h1>Person hinzuf&uuml;gen?</h1>
-            <paper-input autofocus always-float-label type="text" label="ID der Person" value="{{personID}}"></paper-input>
+            <paper-input autofocus always-float-label type="text" label="ID der Person" value="{{personID}}">
+            </paper-input>
             <paper-button dialog-dismiss>Abbrechen</paper-button>
             <paper-button dialog-confirm on-tap="addEntry">Hinzuf&uuml;gen</paper-button>
         </paper-dialog>
 
-        <paper-dialog id="setroom" with-backdrop entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+        <paper-dialog id="setroom" with-backdrop entry-animation="scale-up-animation"
+            exit-animation="scale-down-animation">
             <h1>Raum wechseln?</h1>
             <template is="dom-if" if="[[defaultrooms.length > 0]]">
                 <div class="self-center">
                     <template is="dom-repeat" items="[[defaultrooms]]">
-                        <paper-button dialog-dismiss class="self-center" on-tap="onSelectRoom" indexed$="[[index]]" raised>{{item.name}}</paper-button>
+                        <paper-button dialog-dismiss class="self-center" on-tap="onSelectRoom" indexed$="[[index]]"
+                            raised>{{item.name}}</paper-button>
                     </template>
                 </div>
             </template>
@@ -185,12 +196,12 @@
 
             onSelectRoom(event) {
                 let selected = this.defaultrooms[event.target.getAttribute('indexed')];
-                if(selected && selected.persons)
+                if (selected && selected.persons)
                     this.configure(selected.persons, true)
             }
 
             configure(toBeAdded, clear) {
-                if(clear) {
+                if (clear) {
                     this.set('personen', [])
                 }
 
@@ -226,7 +237,7 @@
             }
 
             addEntry(event) {
-               // var personID = prompt("Bitte geben Sie die ID der Person ein, die sie hinzufügen wollen.");
+                // var personID = prompt("Bitte geben Sie die ID der Person ein, die sie hinzufügen wollen.");
                 if (this.personID !== null && typeof this.personID !== "undefined" && this.personID !== "") {
                     this.push('personen', this.personID);
                     this.personID = undefined;

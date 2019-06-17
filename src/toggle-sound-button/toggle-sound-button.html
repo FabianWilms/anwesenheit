@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 
 <dom-module id="toggle-sound-button">
@@ -10,10 +11,12 @@
         </app-localstorage-document>
 
         <paper-icon-button
+            id="soundtoggle"
             icon="{{_getIcon(soundEnabled)}}" 
-            title="{{_getTitle(soundEnabled)}}" 
             on-tap="_updateSoundState">
         </paper-icon-button>
+
+        <paper-tooltip for="soundtoggle">{{_getTitle(soundEnabled)}}</paper-tooltip>
     </template>
 </dom-module>
 <script>
