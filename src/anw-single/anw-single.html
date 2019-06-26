@@ -147,6 +147,9 @@
       }
 
       video {
+        max-height: 90%;
+        max-width: 90%;
+        border-radius: 5px;
         padding-top: 12px;
         padding-bottom: 10px;
         margin-left: auto;
@@ -415,6 +418,11 @@
      */
     class AnwSingle extends Polymer.Element {
       static get is() { return 'anw-single'; }
+      static get observers() {
+        return [
+          '_statusChanged(person.status, person)'
+        ]
+      }
       static get properties() {
         return {
           /**
@@ -430,10 +438,7 @@
            *  zeiten: ["15:00-16:00"]
            * }
           **/
-          person: {
-            type: Object,
-            observer: '_personChanged'
-          },
+          person: Object,
 
           /**
            * Key to the person this anw-single card represents.
@@ -463,11 +468,11 @@
 
       ready() {
         super.ready();
-        var contentDiv = this.shadowRoot.querySelector('#contentdiv');
-        var gifDiv = this.shadowRoot.querySelector('#gifdiv');
         var vid = this.shadowRoot.querySelector('video');
 
         vid.addEventListener('ended', event => {
+          var contentDiv = this.shadowRoot.querySelector('#contentdiv');
+          var gifDiv = this.shadowRoot.querySelector('#gifdiv');
           contentDiv.style.display = "inline-block";
           gifDiv.style.display = "none";
         });
@@ -497,7 +502,7 @@
         gtag('event', `show sprechzeiten`, { 'event_category': 'settings', 'value': this.showTimes });
       }
 
-      _personChanged(newPerson, oldPerson) {
+      _statusChanged(newStatus, newPerson) {
 
         // After 5 seconds check if data is available. If not show error.
         setTimeout(() => {
@@ -509,24 +514,17 @@
           }
         }, 5000);
 
-        if (typeof newPerson !== "undefined" &&
-          typeof oldPerson !== "undefined" &&
-          Object.entries(newPerson).length > 0 &&
-          Object.entries(oldPerson).length > 0) {
-          if (newPerson.status !== oldPerson.status && typeof oldPerson.status !== "undefined") {
+        if (newStatus) {
+          this._showAsyncGif(parseInt(newStatus));
 
-            this._showAsyncGif(parseInt(newPerson.status));
-
-            if (this.soundEnabled) {
-              var soundURL = newPerson.sounds[newPerson.status];
-              if (soundURL === "undefined" || soundURL === "") {
-                return;
-              } else {
-                var sound = new Audio(soundURL);
-                sound.autoplay = true;
-              }
+          if (this.soundEnabled) {
+            var soundURL = newPerson.sounds[newStatus];
+            if (soundURL === "undefined" || soundURL === "") {
+              return;
+            } else {
+              var sound = new Audio(soundURL);
+              sound.autoplay = true;
             }
-
           }
         }
       }
