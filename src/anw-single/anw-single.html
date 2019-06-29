@@ -300,7 +300,7 @@
     </app-localstorage-document>
 
     <paper-card class="anw-state background" state$="[[person.status]]" error$={{error}}>
-      <template is="dom-if" if="{{person.status}}">
+      <template is="dom-if" if="{{person.status !== undefined}}">
         <div id="contentdiv">
 
           <div class="layout horizontal center card-header">
