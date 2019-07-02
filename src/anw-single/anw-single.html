@@ -519,7 +519,7 @@
           }
         }, 5000);
 
-        if (newStatus && !firstVideoSkipped) {
+        if (newStatus && !this.firstVideoSkipped) {
           this._showAsyncGif(parseInt(newStatus));
 
           if (this.soundEnabled) {
