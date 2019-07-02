@@ -462,6 +462,11 @@
             type: Boolean,
             notify: true,
             value: true
+          },
+
+          firstVideoSkipped: {
+            type: Boolean,
+            value: false
           }
         };
       }
@@ -514,7 +519,7 @@
           }
         }, 5000);
 
-        if (newStatus) {
+        if (newStatus && !firstVideoSkipped) {
           this._showAsyncGif(parseInt(newStatus));
 
           if (this.soundEnabled) {
@@ -526,6 +531,8 @@
               sound.autoplay = true;
             }
           }
+        } else {
+          this.firstVideoSkipped = true
         }
       }
 
