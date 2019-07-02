@@ -464,9 +464,9 @@
             value: true
           },
 
-          firstVideoSkipped: {
-            type: Boolean,
-            value: false
+          lastStatus: {
+            type: Number,
+            value: undefined
           }
         };
       }
@@ -519,7 +519,8 @@
           }
         }, 5000);
 
-        if (newStatus && !this.firstVideoSkipped) {
+        if (newStatus && this.lastStatus && this.lastStatus !== newStatus) {
+          this.lastStatus = newStatus;
           this._showAsyncGif(parseInt(newStatus));
 
           if (this.soundEnabled) {
@@ -532,7 +533,7 @@
             }
           }
         } else {
-          this.firstVideoSkipped = true
+          this.lastStatus = newStatus;
         }
       }
 
