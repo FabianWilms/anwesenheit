@@ -528,8 +528,12 @@
             if (soundURL === "undefined" || soundURL === "") {
               return;
             } else {
-              var sound = new Audio(soundURL);
+              let sound = new Audio(soundURL);
               sound.autoplay = true;
+
+              setTimeout(() => {
+                sound.pause()
+              }, 5000)
             }
           }
         } else {
