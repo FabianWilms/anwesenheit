@@ -455,7 +455,8 @@
           **/
           soundEnabled: {
             type: Boolean,
-            value: true
+            value: true,
+            observer: 'soundEnabledChanged()'
           },
 
           showTimes: {
@@ -467,7 +468,8 @@
           lastStatus: {
             type: Number,
             value: undefined
-          }
+          },
+          sound: Object
         };
       }
 
@@ -528,17 +530,26 @@
             if (soundURL === "undefined" || soundURL === "") {
               return;
             } else {
-              let sound = new Audio(soundURL);
-              sound.autoplay = true;
+              this.sound = new Audio(soundURL);
+              this.sound.autoplay = true;
 
-              setTimeout(() => {
-                sound.pause()
-              }, 5000)
+              setTimeout(this.stopSound(), 5000)
             }
           }
         } else {
           this.lastStatus = newStatus;
         }
+      }
+
+      soundEnabledChanged() {
+        if(!this.soundEnabled && this.sound) {
+          this.stopSound()
+        }
+      }
+
+      stopSound() {
+        this.sound.pause();
+        this.sound = undefined
       }
 
       _showAsyncGif(status) {
