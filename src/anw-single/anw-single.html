@@ -456,7 +456,7 @@
           soundEnabled: {
             type: Boolean,
             value: true,
-            observer: 'soundEnabledChanged()'
+            observer: '_soundEnabledChanged'
           },
 
           showTimes: {
@@ -541,7 +541,7 @@
         }
       }
 
-      soundEnabledChanged() {
+      _soundEnabledChanged() {
         if(!this.soundEnabled && this.sound) {
           this.stopSound()
         }
