@@ -455,14 +455,21 @@
           **/
           soundEnabled: {
             type: Boolean,
-            value: true
+            value: true,
+            observer: '_soundEnabledChanged'
           },
 
           showTimes: {
             type: Boolean,
             notify: true,
             value: true
-          }
+          },
+
+          lastStatus: {
+            type: Number,
+            value: undefined
+          },
+          sound: Object
         };
       }
 
@@ -514,7 +521,8 @@
           }
         }, 5000);
 
-        if (newStatus) {
+        if (newStatus && this.lastStatus && this.lastStatus !== newStatus) {
+          this.lastStatus = newStatus;
           this._showAsyncGif(parseInt(newStatus));
 
           if (this.soundEnabled) {
@@ -522,11 +530,26 @@
             if (soundURL === "undefined" || soundURL === "") {
               return;
             } else {
-              var sound = new Audio(soundURL);
-              sound.autoplay = true;
+              this.sound = new Audio(soundURL);
+              this.sound.autoplay = true;
+
+              setTimeout(this.stopSound(), 5000)
             }
           }
+        } else {
+          this.lastStatus = newStatus;
         }
+      }
+
+      _soundEnabledChanged() {
+        if(!this.soundEnabled && this.sound) {
+          this.stopSound()
+        }
+      }
+
+      stopSound() {
+        this.sound.pause();
+        this.sound = undefined
       }
 
       _showAsyncGif(status) {
