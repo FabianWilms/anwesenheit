@@ -100,7 +100,7 @@
             gtag('event', `subscribe ${this.person.name}`, {'event_category' : 'interaction', 'value': this.mail});
             const mail = this.mail;
 
-            firebase.database().ref(`anwesenheiten/${this.person.key}/subscriptions`).push(mail);
+            firebase.database().ref(`anwesenheiten/${this.person.uid}/subscriptions`).push(mail);
 
             this.set('mail', undefined);
             this.shadowRoot.querySelector("paper-dialog").close();
