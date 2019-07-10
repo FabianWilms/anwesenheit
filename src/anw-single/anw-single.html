@@ -531,9 +531,9 @@
               return;
             } else {
               this.sound = new Audio(soundURL);
-              this.sound.play()
+              this.sound.autoplay = true;
 
-              setTimeout(() => this.stopSound(), 5000)
+              setTimeout(this.stopSound, 5000)
             }
           }
         } else {
