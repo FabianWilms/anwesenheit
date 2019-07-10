@@ -548,7 +548,7 @@
       }
 
       stopSound() {
-        this.sound.pause();
+        if(this.sound) this.sound.pause();
         this.sound = undefined
       }
 
