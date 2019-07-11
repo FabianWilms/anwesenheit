@@ -527,13 +527,12 @@
 
           if (this.soundEnabled) {
             var soundURL = newPerson.sounds[newStatus];
-            if (soundURL === "undefined" || soundURL === "") {
+            if (soundURL === "undefined" || soundURL === "" || this.sound) {
               return;
             } else {
               this.sound = new Audio(soundURL);
-              this.sound.autoplay = true;
-
-              setTimeout(this.stopSound, 5000)
+              this.sound.play();
+              setTimeout(() => this.stopSound(), 5000)
             }
           }
         } else {
@@ -549,6 +548,7 @@
 
       stopSound() {
         if(this.sound) this.sound.pause();
+
         this.sound = undefined
       }
 
