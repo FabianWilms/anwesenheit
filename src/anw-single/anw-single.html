@@ -300,7 +300,7 @@
     </app-localstorage-document>
 
     <paper-card class="anw-state background" state$="[[person.status]]" error$={{error}}>
-      <template is="dom-if" if="{{person.status !== undefined}}">
+      <template is="dom-if" if="{{person.status}}">
         <div id="contentdiv">
 
           <div class="layout horizontal center card-header">
@@ -483,6 +483,15 @@
           contentDiv.style.display = "inline-block";
           gifDiv.style.display = "none";
         });
+
+
+        // After 5 seconds check if data is available. If not show error.
+        setTimeout(() => {
+          if (Object.entries(this.person).length === 0 && this.person.constructor === Object) {
+            // We don't have data!
+            this.set('error', `Ein Nutzer mit der ID "${this.key}" existiert nicht.`);
+          }
+        }, 5000);
       }
 
       removePersonDialog(event) {
@@ -510,17 +519,7 @@
       }
 
       _statusChanged(newStatus, newPerson) {
-
-        // After 5 seconds check if data is available. If not show error.
-        setTimeout(() => {
-          if (Object.entries(this.person).length === 0 && this.person.constructor === Object) {
-            // We don't have data!
-            this.set('error', `Ein Nutzer mit der ID "${this.key}" existiert nicht.`);
-          } else {
-            this.set('error', undefined);
-          }
-        }, 5000);
-
+        this.set('error', undefined)
         if (newStatus && this.lastStatus && this.lastStatus !== newStatus) {
           this.lastStatus = newStatus;
           this._showAsyncGif(parseInt(newStatus));
@@ -542,13 +541,13 @@
       }
 
       _soundEnabledChanged() {
-        if(!this.soundEnabled && this.sound) {
+        if (!this.soundEnabled && this.sound) {
           this.stopSound()
         }
       }
 
       stopSound() {
-        if(this.sound) this.sound.pause();
+        if (this.sound) this.sound.pause();
         this.sound = undefined
       }
 
