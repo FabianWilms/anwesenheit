@@ -300,7 +300,7 @@
     </app-localstorage-document>
 
     <paper-card class="anw-state background" state$="[[person.status]]" error$={{error}}>
-      <template is="dom-if" if="{{person.status}}">
+      <template is="dom-if" if="{{!_isLoadingFinished(person, error)}}">
         <div id="contentdiv">
 
           <div class="layout horizontal center card-header">
@@ -342,6 +342,7 @@
 
             <hr>
 
+
             <div style="position: relative;">
               <div class="layout horizontal center-justified actions">
                 <notify-button class="action" person="[[person]]"></notify-button>
@@ -356,11 +357,13 @@
               <hr class="scaling" opened$="{{showTimes}}">
             </div>
 
-            <iron-collapse opened="{{showTimes}}">
-              <div class="collapse-content">
-                <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
-              </div>
-            </iron-collapse>
+            <template is="dom-if" if="[[person.sprechzeiten]]">
+                <iron-collapse opened="{{showTimes}}">
+                  <div class="collapse-content">
+                    <anw-sprechzeiten zeiten="{{person.sprechzeiten}}"></anw-sprechzeiten>
+                  </div>
+                </iron-collapse>
+            </template>
 
           </div>
         </div>
@@ -392,7 +395,7 @@
         </div>
       </template>
 
-      <template is="dom-if" if="{{_isLoadingVisible(person, error)}}">
+      <template is="dom-if" if="{{_isLoadingFinished(person, error)}}">
         <div class="min-height">
           <div class="loading"></div>
         </div>
@@ -502,7 +505,7 @@
         this.dispatchEvent(new CustomEvent('delete', { detail: { key: this.key } }));
       }
 
-      _isLoadingVisible(person, error) {
+      _isLoadingFinished(person, error) {
         if (!error) {
           if (Object.entries(this.person).length !== 0) {
             return false;
