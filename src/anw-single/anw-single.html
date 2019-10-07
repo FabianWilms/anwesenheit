@@ -83,11 +83,6 @@
         margin-top: 8px;
       }
 
-      .message.main {
-        font-size: 32px;
-        hyphens: auto;
-      }
-
       .message.until {
         font-size: 20px;
         line-height: 10px;
@@ -331,7 +326,7 @@
 
           <div class="card-content">
             <div class="message">
-              <span class="message main">
+              <span class="message main" style="font-size:[[_getFontSize(person.message)]];">
                 [[person.message]]
               </span>
               <template is="dom-if" if="[[person.until]]">
@@ -539,6 +534,23 @@
           }
         } else {
           this.lastStatus = newStatus;
+        }
+      }
+
+      /**
+       * Used to change font-size based on text-length.
+       * Up to 20 chars -> 2rem
+       * Between 20 and 50 chars -> 1.5rem
+       * More chars -> 1rem
+       */
+      _getFontSize(newMessage) {
+        const charCount = newMessage.length;
+        if(charCount < 20) {
+          return "2rem";
+        } else  if(charCount < 50) {
+          return "1.5rem";
+        } else {
+          return "1rem";
         }
       }
 
