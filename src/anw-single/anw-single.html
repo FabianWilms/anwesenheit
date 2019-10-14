@@ -543,12 +543,16 @@
        * Between 20 and 50 chars -> 1.5rem
        * More chars -> 1rem
        */
-      _getFontSize(newMessage) {
-        const charCount = newMessage.length;
-        if(charCount < 20) {
-          return "2rem";
-        } else  if(charCount < 50) {
-          return "1.5rem";
+       _getFontSize(newMessage) {
+        if (newMessage && newMessage.hasOwnProperty('length')) {
+          const charCount = newMessage.length;
+          if (charCount < 20) {
+            return "2rem";
+          } else if (charCount < 50) {
+            return "1.5rem";
+          } else {
+            return "1rem";
+          }
         } else {
           return "1rem";
         }
