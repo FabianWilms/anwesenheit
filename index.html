@@ -10,7 +10,7 @@
     <style is="custom-style" include="shared-styles"></style>
     <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="https://browser.sentry-cdn.com/4.0.4/bundle.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://browser.sentry-cdn.com/4.0.4/bundle.min.js" crossorigin="anonymous"></script>
 
     <link rel="import" href="src/anwesenheit-app/anwesenheit-app.html">
     <link rel="import" href="bower_components/paper-toast/paper-toast.html">
@@ -39,7 +39,7 @@
     <meta name="msapplication-TileImage" content="images/touch/ms-icon-144x144.png">
 
     <script>
-      Sentry.init({ dsn: 'https://1b897fa07a5f4614bfc2d2aea8418c5e@sentry.io/1287836' });
+      window.addEventListener('dominteractive', () => Sentry.init({ dsn: 'https://1b897fa07a5f4614bfc2d2aea8418c5e@sentry.io/1287836' }));
 
       /**
       * [polymer-root-path]
