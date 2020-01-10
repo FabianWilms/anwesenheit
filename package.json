@@ -1,0 +1,7 @@
+{
+    "name": "anwesenheit",
+    "version": "1.0.0",
+    "dependencies": {
+        "particlesjs": "^2.2.3"
+    }
+}
