@@ -11,7 +11,8 @@
     "src/**/*",
     "images/**/*",
     "styles/**/*",
-    "bower.json"
+    "bower.json",
+    "node_modules/particlesjs/dist/particles.min.js"
   ],
   "lint": {
     "rules": [
