@@ -49,7 +49,7 @@
 
       function particlesInitializer() {
         Particles.init({
-          selector: '.background',
+          selector: '.particles-background',
           connectParticles: true,
           color: "#b3b3b3"
         });
@@ -82,7 +82,7 @@
         margin: 0;
         padding: 0;
       }
-      .background {
+      .particles-background {
         position:  absolute;
         display:  block;
         top: 0;
@@ -93,7 +93,6 @@
   </head>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115175472-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -109,6 +108,6 @@
       Bitte aktiviere Javascript, um diese Seite sehen zu können :)
     </noscript>
 
-    <canvas class="background"></canvas>
+    <canvas class="particles-background"></canvas>
   </body>
 </html>
