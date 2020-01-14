@@ -3,7 +3,15 @@
   "builds": [
     {
       "preset": "es6-bundled",
-      "basePath": "/anwesenheit/"
+      "basePath": "/anwesenheit/",
+      "js": {
+        "compile": {
+          "exclude": ["node_modules/**"]
+        },
+        "minify": {
+          "exclude": ["node_modules/**"]
+        }
+      }
     }
   ],
   "sources": [
