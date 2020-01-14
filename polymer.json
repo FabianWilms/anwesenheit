@@ -6,10 +6,10 @@
       "basePath": "/anwesenheit/",
       "js": {
         "compile": {
-          "exclude": ["node_modules/**"]
+          "exclude": ["node_modules/**/*"]
         },
         "minify": {
-          "exclude": ["node_modules/**"]
+          "exclude": ["node_modules/**/*"]
         }
       }
     }
@@ -22,7 +22,7 @@
     "bower.json"
   ],
   "extraDependencies": [
-    "node_modules/particlesjs/dist/**"
+    "node_modules/particlesjs/dist/**/*"
   ],
   "lint": {
     "rules": [
