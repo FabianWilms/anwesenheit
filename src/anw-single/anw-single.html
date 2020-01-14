@@ -292,7 +292,7 @@
     <app-localstorage-document key="showTimes[[person.key]]" data="{{showTimes}}">
     </app-localstorage-document>
 
-    <paper-card class="anw-state" state$="[[person.status]]" error$={{error}}>
+    <paper-card class="anw-state background" state$="[[person.status]]" error$={{error}}>
       <template is="dom-if" if="{{!_isLoadingFinished(person, error)}}">
         <div id="contentdiv">
 
