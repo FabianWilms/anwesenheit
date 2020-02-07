@@ -69,11 +69,9 @@
         }
 
         #avatar-or-emoji {
-          display: none;
-        }
-
-        #remove-button {
-          display: none;
+          float:left;
+          width: 70px;
+          margin: 10px;
         }
 
         .actionsBig {
@@ -96,6 +94,36 @@
 
         paper-card {
           width: 320px;
+        }
+
+        #remove-button {
+          position: absolute;
+          right: 26px;
+          top: 20px;
+          visibility: hidden;
+          opacity: 0;
+          transition: all 0.4s ease-in-out;
+        }
+
+        #avatar-or-emoji {
+          position: absolute;
+          right: 14px;
+          top: 8px;
+          visibility: visible;
+          opacity: 1;
+          transition: all 0.4s ease-in-out;
+        }
+
+        paper-card:hover #remove-button {
+          transform: rotate(360deg);
+          visibility: visible;
+          opacity: 1;
+        }
+
+        paper-card:hover #avatar-or-emoji {
+          transform: rotate(360deg);
+          visibility: hidden;
+          opacity: 0;
         }
 
         .card-header {
@@ -146,36 +174,6 @@
         .action {
           padding: 0px 8px;
         }
-      }
-
-      #remove-button {
-        position: absolute;
-        right: 26px;
-        top: 20px;
-        visibility: hidden;
-        opacity: 0;
-        transition: all 0.4s ease-in-out;
-      }
-
-      #avatar-or-emoji {
-        position: absolute;
-        right: 14px;
-        top: 8px;
-        visibility: visible;
-        opacity: 1;
-        transition: all 0.4s ease-in-out;
-      }
-
-      paper-card:hover #remove-button {
-        transform: rotate(360deg);
-        visibility: visible;
-        opacity: 1;
-      }
-
-      paper-card:hover #avatar-or-emoji {
-        transform: rotate(360deg);
-        visibility: hidden;
-        opacity: 0;
       }
 
       paper-card {
@@ -374,20 +372,19 @@
 
     <paper-card class="anw-state background" state$="[[person.status]]" error$={{error}}>
       <template is="dom-if" if="{{!_isLoadingFinished(person, error)}}">
+        <div id="avatar-or-emoji">
+          <template is="dom-if" if="{{!person.emoji}}">
+            <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]"
+                        class="img-circle">
+            </iron-image>
+          </template>
+          <template is="dom-if" if="{{person.emoji}}">
+            <div class="img-circle">{{person.emoji}}</div>
+          </template>
+        </div>
         <div id="contentdiv">
-
           <div class="layout horizontal center card-header">
             <span class="title flex">[[person.name]]</span>
-            <div id="avatar-or-emoji">
-              <template is="dom-if" if="{{!person.emoji}}">
-                <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]"
-                  class="img-circle">
-                </iron-image>
-              </template>
-              <template is="dom-if" if="{{person.emoji}}">
-                <div class="img-circle">{{person.emoji}}</div>
-              </template>
-            </div>
             <div id="remove-button" class="layout vertical center-justified" style="width: 45px; height: 45px;">
               <paper-icon-button class="self-center" icon="delete" style="padding: 0px; width: 28px; height: 28px;"
                 on-tap="removePersonDialog"></paper-icon-button>
