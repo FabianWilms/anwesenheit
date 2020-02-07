@@ -18,8 +18,134 @@
 <dom-module id="anw-single">
   <template>
     <style>
-      :host {
-        padding: 8px;
+
+      @media(max-width: 671px) {
+        :host {
+          padding-bottom: 8px;
+          width: 100%;
+        }
+
+        paper-card {
+          width: 100%;
+
+          --paper-card: {
+            border-radius: 0px;
+          }
+        }
+
+        .card-header {
+          padding: 6px 8px 0px 8px;
+          text-align: center;
+        }
+
+        .card-header .title {
+          text-align: left;
+          font-size: 24px;
+          font-weight: bold;
+        }
+
+        div .message {
+          margin-bottom: 4px;
+          margin-top: 4px;
+        }
+
+        .message.until {
+          font-size: 10px;
+          line-height: 5px;
+        }
+
+        .location {
+          padding-left: 10px;
+          font-size: 10px;
+        }
+
+        .location iron-icon {
+          height: 12px;
+          width: 12px;
+        }
+
+        .card-content {
+          padding: 0px 8px 4px 8px;
+        }
+
+        #avatar-or-emoji {
+          display: none;
+        }
+
+        #remove-button {
+          display: none;
+        }
+
+        .actionsBig {
+          display: none !important;
+        }
+
+        small {
+          display: none;
+        }
+
+        .dividerBig {
+          display: none;
+        }
+      }
+
+      @media(min-width: 672px) {
+        :host {
+          padding: 8px;
+        }
+
+        paper-card {
+          width: 320px;
+        }
+
+        .card-header {
+          padding: 12px 16px 0px 16px;
+          text-align: center;
+        }
+
+        .card-header .title {
+          text-align: left;
+          font-size: 32px;
+          font-weight: bold;
+        }
+
+        div .message {
+          margin-bottom: 8px;
+          margin-top: 8px;
+        }
+
+        .message.until {
+          font-size: 20px;
+          line-height: 10px;
+        }
+
+        .location {
+          padding-left: 12px;
+          font-size: 12px;
+        }
+
+        .location iron-icon {
+          height: 16px;
+          width: 16px;
+        }
+
+        .card-content {
+          padding: 0px 16px 8px 16px;
+        }
+
+        .actionsSmall {
+          display: none;
+        }
+
+        .actionsBig {
+          padding-top: 6px;
+          padding-bottom: 8px;
+          border: 0;
+        }
+
+        .action {
+          padding: 0px 8px;
+        }
       }
 
       #remove-button {
@@ -53,7 +179,6 @@
       }
 
       paper-card {
-        width: 320px;
         -webkit-transition: background-color 1000ms ease;
         -ms-transition: background-color 1000ms ease;
         transition: background-color 1000ms ease;
@@ -74,51 +199,6 @@
 
       .message {
         font-family: 'Roboto Slab', 'serif';
-      }
-
-      div .message {
-        margin-bottom: 8px;
-        margin-top: 8px;
-      }
-
-      .message.until {
-        font-size: 20px;
-        line-height: 10px;
-      }
-
-      .card-header {
-        padding: 12px 16px 0px 16px;
-        text-align: center;
-      }
-
-      .card-header .title {
-        text-align: left;
-        font-size: 32px;
-        font-weight: bold;
-      }
-
-      .location {
-        padding-left: 12px;
-        font-size: 12px;
-      }
-
-      .location iron-icon {
-        height: 16px;
-        width: 16px;
-      }
-
-      .card-content {
-        padding: 0px 16px 8px 16px;
-      }
-
-      .actions {
-        padding-top: 6px;
-        padding-bottom: 8px;
-        border: 0;
-      }
-
-      .action {
-        padding: 0px 8px;
       }
 
       .img-circle {
@@ -313,6 +393,19 @@
                 on-tap="removePersonDialog"></paper-icon-button>
               <paper-tooltip>Person entfernen</paper-tooltip>
             </div>
+
+            <div class="actionsSmall">
+              <div class="layout horizontal center-justified">
+                  <notify-button class="action" person="[[person]]"></notify-button>
+                  <subscribe-button class="action" person=[[person]]></subscribe-button>
+                  <div class="layout vertical self-center action">
+                    <paper-icon-button class="self-center" on-tap="_changeState" expand$="[[showTimes]]"
+                      icon="expand-more">
+                    </paper-icon-button>
+                    <small class="self-center">Zeiten</small>
+                  </div>
+                </div>
+            </div>
           </div>
 
           <template is="dom-if" if="[[person.location]]">
@@ -333,11 +426,10 @@
               </template>
             </div>
 
-            <hr>
-
+            <hr class="dividerBig">
 
             <div style="position: relative;">
-              <div class="layout horizontal center-justified actions">
+              <div class="layout horizontal center-justified actionsBig">
                 <notify-button class="action" person="[[person]]"></notify-button>
                 <subscribe-button class="action" person=[[person]]></subscribe-button>
                 <div class="layout vertical self-center action">
