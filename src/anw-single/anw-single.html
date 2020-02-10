@@ -44,6 +44,10 @@
           font-weight: bold;
         }
 
+        .card-header .title[location]  {
+          margin-top: -14px;
+        }
+
         div .message {
           margin-bottom: 4px;
           margin-top: 4px;
@@ -57,6 +61,8 @@
         .location {
           padding-left: 10px;
           font-size: 10px;
+          padding-left: 52px;
+          margin-top: -16px;
         }
 
         .location iron-icon {
@@ -68,12 +74,6 @@
           padding: 0px 8px 4px 8px;
         }
 
-        #avatar-or-emoji {
-          float:left;
-          width: 70px;
-          margin: 10px;
-        }
-
         .actionsBig {
           display: none !important;
         }
@@ -83,6 +83,10 @@
         }
 
         .dividerBig {
+          display: none;
+        }
+
+        #avatar-or-emoji {
           display: none;
         }
       }
@@ -112,6 +116,10 @@
           visibility: visible;
           opacity: 1;
           transition: all 0.4s ease-in-out;
+        }
+
+        #avatar-or-emoji-mobile {
+          display: none;
         }
 
         paper-card:hover #remove-button {
@@ -207,6 +215,17 @@
         vertical-align: middle;
         line-height: 70px;
         font-size: 50px;
+      }
+
+      .img-circle-mobile {
+        border-radius: 50%;
+        width:36px;
+        height: 36px;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 36px;
+        font-size: 30px;
+        margin-right: 8px;
       }
 
       #contentdiv {
@@ -372,19 +391,31 @@
 
     <paper-card class="anw-state background" state$="[[person.status]]" error$={{error}}>
       <template is="dom-if" if="{{!_isLoadingFinished(person, error)}}">
-        <div id="avatar-or-emoji">
-          <template is="dom-if" if="{{!person.emoji}}">
-            <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]"
-                        class="img-circle">
-            </iron-image>
-          </template>
-          <template is="dom-if" if="{{person.emoji}}">
-            <div class="img-circle">{{person.emoji}}</div>
-          </template>
-        </div>
         <div id="contentdiv">
           <div class="layout horizontal center card-header">
-            <span class="title flex">[[person.name]]</span>
+            <div id="avatar-or-emoji-mobile">
+                <template is="dom-if" if="{{!person.emoji}}">
+                  <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]"
+                              class="img-circle-mobile">
+                  </iron-image>
+                </template>
+                <template is="dom-if" if="{{person.emoji}}">
+                  <div class="img-circle-mobile">{{person.emoji}}</div>
+                </template>
+              </div>
+
+            <span location$="[[person.location]]" class="title flex">[[person.name]]</span>
+
+            <div id="avatar-or-emoji">
+              <template is="dom-if" if="{{!person.emoji}}">
+                <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]"
+                            class="img-circle">
+                </iron-image>
+              </template>
+              <template is="dom-if" if="{{person.emoji}}">
+                <div class="img-circle">{{person.emoji}}</div>
+              </template>
+            </div>
             <div id="remove-button" class="layout vertical center-justified" style="width: 45px; height: 45px;">
               <paper-icon-button class="self-center" icon="delete" style="padding: 0px; width: 28px; height: 28px;"
                 on-tap="removePersonDialog"></paper-icon-button>
