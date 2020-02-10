@@ -18,42 +18,173 @@
 <dom-module id="anw-single">
   <template>
     <style>
-      :host {
-        padding: 8px;
+
+      @media(max-width: 671px) {
+        :host {
+          padding-bottom: 8px;
+          width: 100%;
+        }
+
+        paper-card {
+          width: 100%;
+
+          --paper-card: {
+            border-radius: 0px;
+          }
+        }
+
+        .card-header {
+          padding: 6px 8px 0px 8px;
+          text-align: center;
+        }
+
+        .card-header .title {
+          text-align: left;
+          font-size: 24px;
+          font-weight: bold;
+        }
+
+        .card-header .title[location]  {
+          margin-top: -14px;
+        }
+
+        div .message {
+          margin-bottom: 4px;
+          margin-top: 4px;
+        }
+
+        .message.until {
+          font-size: 10px;
+          line-height: 5px;
+        }
+
+        .location {
+          padding-left: 10px;
+          font-size: 10px;
+          padding-left: 52px;
+          margin-top: -16px;
+        }
+
+        .location iron-icon {
+          height: 12px;
+          width: 12px;
+        }
+
+        .card-content {
+          padding: 0px 8px 4px 8px;
+        }
+
+        .actionsBig {
+          display: none !important;
+        }
+
+        small {
+          display: none;
+        }
+
+        .dividerBig {
+          display: none;
+        }
+
+        #avatar-or-emoji {
+          display: none;
+        }
       }
 
-      #remove-button {
-        position: absolute;
-        right: 26px;
-        top: 20px;
-        visibility: hidden;
-        opacity: 0;
-        transition: all 0.4s ease-in-out;
-      }
+      @media(min-width: 672px) {
+        :host {
+          padding: 8px;
+        }
 
-      #avatar-or-emoji {
-        position: absolute;
-        right: 14px;
-        top: 8px;
-        visibility: visible;
-        opacity: 1;
-        transition: all 0.4s ease-in-out;
-      }
+        paper-card {
+          width: 320px;
+        }
 
-      paper-card:hover #remove-button {
-        transform: rotate(360deg);
-        visibility: visible;
-        opacity: 1;
-      }
+        #remove-button {
+          position: absolute;
+          right: 26px;
+          top: 20px;
+          visibility: hidden;
+          opacity: 0;
+          transition: all 0.4s ease-in-out;
+        }
 
-      paper-card:hover #avatar-or-emoji {
-        transform: rotate(360deg);
-        visibility: hidden;
-        opacity: 0;
+        #avatar-or-emoji {
+          position: absolute;
+          right: 14px;
+          top: 8px;
+          visibility: visible;
+          opacity: 1;
+          transition: all 0.4s ease-in-out;
+        }
+
+        #avatar-or-emoji-mobile {
+          display: none;
+        }
+
+        paper-card:hover #remove-button {
+          transform: rotate(360deg);
+          visibility: visible;
+          opacity: 1;
+        }
+
+        paper-card:hover #avatar-or-emoji {
+          transform: rotate(360deg);
+          visibility: hidden;
+          opacity: 0;
+        }
+
+        .card-header {
+          padding: 12px 16px 0px 16px;
+          text-align: center;
+        }
+
+        .card-header .title {
+          text-align: left;
+          font-size: 32px;
+          font-weight: bold;
+        }
+
+        div .message {
+          margin-bottom: 8px;
+          margin-top: 8px;
+        }
+
+        .message.until {
+          font-size: 20px;
+          line-height: 10px;
+        }
+
+        .location {
+          padding-left: 12px;
+          font-size: 12px;
+        }
+
+        .location iron-icon {
+          height: 16px;
+          width: 16px;
+        }
+
+        .card-content {
+          padding: 0px 16px 8px 16px;
+        }
+
+        .actionsSmall {
+          display: none;
+        }
+
+        .actionsBig {
+          padding-top: 6px;
+          padding-bottom: 8px;
+          border: 0;
+        }
+
+        .action {
+          padding: 0px 8px;
+        }
       }
 
       paper-card {
-        width: 320px;
         -webkit-transition: background-color 1000ms ease;
         -ms-transition: background-color 1000ms ease;
         transition: background-color 1000ms ease;
@@ -76,51 +207,6 @@
         font-family: 'Roboto Slab', 'serif';
       }
 
-      div .message {
-        margin-bottom: 8px;
-        margin-top: 8px;
-      }
-
-      .message.until {
-        font-size: 20px;
-        line-height: 10px;
-      }
-
-      .card-header {
-        padding: 12px 16px 0px 16px;
-        text-align: center;
-      }
-
-      .card-header .title {
-        text-align: left;
-        font-size: 32px;
-        font-weight: bold;
-      }
-
-      .location {
-        padding-left: 12px;
-        font-size: 12px;
-      }
-
-      .location iron-icon {
-        height: 16px;
-        width: 16px;
-      }
-
-      .card-content {
-        padding: 0px 16px 8px 16px;
-      }
-
-      .actions {
-        padding-top: 6px;
-        padding-bottom: 8px;
-        border: 0;
-      }
-
-      .action {
-        padding: 0px 8px;
-      }
-
       .img-circle {
         border-radius: 50%;
         width: 70px;
@@ -129,6 +215,17 @@
         vertical-align: middle;
         line-height: 70px;
         font-size: 50px;
+      }
+
+      .img-circle-mobile {
+        border-radius: 50%;
+        width:36px;
+        height: 36px;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 36px;
+        font-size: 30px;
+        margin-right: 8px;
       }
 
       #contentdiv {
@@ -295,13 +392,24 @@
     <paper-card class="anw-state background" state$="[[person.status]]" error$={{error}}>
       <template is="dom-if" if="{{!_isLoadingFinished(person, error)}}">
         <div id="contentdiv">
-
           <div class="layout horizontal center card-header">
-            <span class="title flex">[[person.name]]</span>
+            <div id="avatar-or-emoji-mobile">
+                <template is="dom-if" if="{{!person.emoji}}">
+                  <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]"
+                              class="img-circle-mobile">
+                  </iron-image>
+                </template>
+                <template is="dom-if" if="{{person.emoji}}">
+                  <div class="img-circle-mobile">{{person.emoji}}</div>
+                </template>
+              </div>
+
+            <span location$="[[person.location]]" class="title flex">[[person.name]]</span>
+
             <div id="avatar-or-emoji">
               <template is="dom-if" if="{{!person.emoji}}">
                 <iron-image sizing="cover" fade preload src="[[person.avatar]]" alt="[[person.name]]"
-                  class="img-circle">
+                            class="img-circle">
                 </iron-image>
               </template>
               <template is="dom-if" if="{{person.emoji}}">
@@ -312,6 +420,19 @@
               <paper-icon-button class="self-center" icon="delete" style="padding: 0px; width: 28px; height: 28px;"
                 on-tap="removePersonDialog"></paper-icon-button>
               <paper-tooltip>Person entfernen</paper-tooltip>
+            </div>
+
+            <div class="actionsSmall">
+              <div class="layout horizontal center-justified">
+                  <notify-button class="action" person="[[person]]"></notify-button>
+                  <subscribe-button class="action" person=[[person]]></subscribe-button>
+                  <div class="layout vertical self-center action">
+                    <paper-icon-button class="self-center" on-tap="_changeState" expand$="[[showTimes]]"
+                      icon="expand-more">
+                    </paper-icon-button>
+                    <small class="self-center">Zeiten</small>
+                  </div>
+                </div>
             </div>
           </div>
 
@@ -333,11 +454,10 @@
               </template>
             </div>
 
-            <hr>
-
+            <hr class="dividerBig">
 
             <div style="position: relative;">
-              <div class="layout horizontal center-justified actions">
+              <div class="layout horizontal center-justified actionsBig">
                 <notify-button class="action" person="[[person]]"></notify-button>
                 <subscribe-button class="action" person=[[person]]></subscribe-button>
                 <div class="layout vertical self-center action">

@@ -1,5 +1,8 @@
 {
     "name": "anwesenheit",
+    "scripts": {
+        "serve": "polymer serve"
+    },
     "version": "1.0.0",
     "dependencies": {
         "particlesjs": "^2.2.3"

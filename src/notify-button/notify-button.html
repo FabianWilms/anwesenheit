@@ -21,6 +21,12 @@
 <dom-module id="notify-button">
     <template>
         <style>
+            @media(max-width: 671px) {
+                small {
+                    display: none;
+                }
+            }
+            
             paper-icon-button[blocked] {
                 display: none;
             }
