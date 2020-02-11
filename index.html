@@ -12,7 +12,6 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap" rel="stylesheet"> 
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <!--<script src="node_modules/particlesjs/dist/particles.min.js"></script>-->
     <script defer src="https://browser.sentry-cdn.com/4.0.4/bundle.min.js?onload=sentryInitializer" crossorigin="anonymous" onload="sentryInitializer()"></script>
 
     <link rel="import" href="src/anwesenheit-app/anwesenheit-app.html">
@@ -47,14 +46,6 @@
         Sentry.init({ dsn: 'https://1b897fa07a5f4614bfc2d2aea8418c5e@sentry.io/1287836' });
       }
 
-      window.onload = function() {
-        Particles.init({
-          selector: '.particles-background',
-          connectParticles: true,
-          color: "#b3b3b3"
-        });
-      };
-
       /**
       * [polymer-root-path]
       *
@@ -82,13 +73,6 @@
         margin: 0;
         padding: 0;
       }
-      .particles-background {
-        position:  absolute;
-        display:  block;
-        top: 0;
-        left: 0;
-        z-index: -1;
-      }
     </style>
   </head>
 
@@ -107,7 +91,5 @@
     <noscript>
       Bitte aktiviere Javascript, um diese Seite sehen zu können :)
     </noscript>
-
-    <canvas class="particles-background"></canvas>
   </body>
 </html>
