@@ -73,6 +73,21 @@
         margin: 0;
         padding: 0;
       }
+
+      .anwesenheit-background {
+        filter: blur(8px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 105%;
+        height: 105%;
+        margin-top: -1%;
+        margin-left: -1%;
+        z-index: -1;
+        background-image: url(https://images.unsplash.com/photo-1497366754035-f200968a6e72);
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
     </style>
   </head>
 
@@ -86,6 +101,7 @@
   </script>
   
   <body>
+    <div class="anwesenheit-background"></div>
     <anwesenheit-app></anwesenheit-app>
     <paper-toast id="toast"></paper-toast>
     <noscript>
