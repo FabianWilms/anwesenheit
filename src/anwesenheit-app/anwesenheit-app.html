@@ -89,8 +89,8 @@
             <div class="layout horizontal wrap center-justified">
 
                 <template is="dom-if" if="[[personen]]">
-                    <template is="dom-repeat" items="[[personen]]">
-                        <anw-single on-delete="_onDeleteEntry" sound-enabled="{{soundEnabled}}" key="{{item}}">
+                    <template is="dom-repeat" items="[[personen]]" sort="sortPersonen" observe="status">
+                        <anw-single on-status-changed="_statusChanged" on-delete="_onDeleteEntry" sound-enabled="{{soundEnabled}}" key="{{item.key}}">
                         </anw-single>
                     </template>
                 </template>
@@ -158,7 +158,7 @@
          * @customElement
          * @polymer
          */
-        class AnwesenheitApp extends Polymer.Element {
+        class AnwesenheitApp extends Polymer.MutableData(Polymer.Element) {
             static get is() {
                 return 'anwesenheit-app';
             }
@@ -206,8 +206,8 @@
                 }
 
                 toBeAdded.forEach(element => {
-                    if (!this.personen.includes(element)) {
-                        this.push('personen', element);
+                    if (!this.personen.some(e => e.key === element)) {
+                        this.push('personen', {key: element, status: 2});
                     }
                 })
             }
@@ -216,7 +216,7 @@
                 var newurl = new URL(document.location.href.split("?")[0]);
 
                 this.personen.forEach(element => {
-                    newurl.searchParams.append("track", element);
+                    newurl.searchParams.append("track", element.key);
                 })
 
                 if (navigator.share !== undefined) {
@@ -239,15 +239,32 @@
             addEntry(event) {
                 // var personID = prompt("Bitte geben Sie die ID der Person ein, die sie hinzufügen wollen.");
                 if (this.personID !== null && typeof this.personID !== "undefined" && this.personID !== "") {
-                    this.push('personen', this.personID);
+                    this.push('personen', {key: this.personID, status: 2});
                     this.personID = undefined;
                 }
             }
 
             _onDeleteEntry(event) {
                 const personKey = event.detail.key;
-                const personIndex = this.personen.indexOf(personKey);
+                const personIndex = this.personen.indexOf(this.personen.find(pers => pers.key === personKey));
                 this.splice('personen', personIndex, personIndex + 1);
+            }
+
+            sortPersonen(a,b) {
+                if (a.status < b.status) return -1;
+                if (a.status > b.status) return 1;
+                return 0;
+            }
+
+            _statusChanged(event) {
+                const personState = event.detail;
+
+                const personIndex = this.personen.indexOf(this.personen.find(pers => pers.key === personState.key));
+                if(personState.status !== undefined){
+                    this.set("personen." + personIndex + ".status", parseInt(personState.status))
+                } else {
+                    this.set("personen." + personIndex + ".status", 2)
+                }
             }
 
         }
