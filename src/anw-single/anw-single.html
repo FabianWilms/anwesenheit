@@ -554,12 +554,18 @@
            *  zeiten: ["15:00-16:00"]
            * }
           **/
-          person: Object,
+          person: {
+            type: Object,
+            notify: true
+          },
 
           /**
            * Key to the person this anw-single card represents.
           **/
-          key: String,
+          key: {
+            type: String,
+            notify: true
+          },
 
           /**
            * If an error occurs this String will contain an error message to display to the user.
@@ -652,6 +658,10 @@
           }
         } else {
           this.lastStatus = newStatus;
+        }
+
+        if(newStatus !== undefined) {
+          this.dispatchEvent(new CustomEvent('status-changed', { detail: { key: this.key, status: newStatus } }));
         }
       }
 
